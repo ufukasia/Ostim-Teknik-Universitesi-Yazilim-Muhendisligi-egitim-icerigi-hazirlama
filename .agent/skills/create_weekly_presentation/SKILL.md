@@ -1,30 +1,25 @@
 ---
 name: create_weekly_presentation
-description: Yeni bir haftalık sunum oluşturmak istendiğinde temel şablonu kopyalayarak yeni sunumu yapılandırır.
+description: Legacy compatibility alias. Yeni haftalık deck üretiminde eski tek parça akış yerine `weekly_deck_orchestrator` ve `deck_architect` zincirini kullan.
 ---
 
-# Yeni Haftalık Sunum Oluşturma (Create Weekly Presentation)
+# Create Weekly Presentation
 
-**Tetikleyici (Trigger):** Kullanıcı "yeni bir sunum yarat", "yeni hafta sunumunu oluştur" veya benzer bir komutla yeni içerik talep ettiğinde devreye girer.
+Bu skill geriye dönük uyumluluk içindir.
 
-## Uygulama Adımları
+## Kullanım
 
-Kullanıcı yeni bir sunum oluşturmanı istediğinde **asla sıfırdan kod yazmaya başlama**. KESİNLİKLE aşağıdaki süreci izle:
+- Kullanıcı eski alışkanlıkla `create_weekly_presentation` mantığında istek verirse bu skill tetiklenebilir.
+- Yeni iş akışında doğrudan `weekly_deck_orchestrator` giriş kapısı kabul edilir.
 
-### 1. Şablonu Kopyala (Zorunlu İlk Adım)
-- **Kaynak dosya:** `c:\Users\ufuka\Desktop\Olasılık\temel sunum yapısı.tex`
-- Bütün değişikliklerden önce `run_command` aracıyla (Örn: PowerShell) şablon dosyasını yeni haftanın adıyla kopyala.
-- **Örnek Komut:** `Copy-Item "c:\Users\ufuka\Desktop\Olasılık\temel sunum yapısı.tex" "c:\Users\ufuka\Desktop\Olasılık\8-hafta-olasilik.tex"`
+## Yönlendirme
 
-### 2. Dosya İçi Metadata Güncelleme
-- Kopyalayarak elde ettiğin yeni `.tex` dosyasını düzenlemeye başla.
-- `\subtitle{Hafta X: ...}` alanını kullanıcının belirttiği haftaya ve başlığa göre güncelle.
+1. `.agent/rules/rules.md` dosyasını oku.
+2. `.agent/skills/mapping.yaml` içindeki yeni mimariyi doğrula.
+3. `weekly_deck_orchestrator` skill'ine geç.
+4. Scope ve plan için `deck_architect`, yazım için `slide_composer`, teslim için `deck_guard` kullan.
 
-### 3. İçerik ve Gövde Entegrasyonu
-- Şablonda hazır bulunan `\section`, `\subsection` ve `\begin{frame} ... \end{frame}` iskeletlerine sadık kalarak kullanıcının istediği konuyu yerleştir.
-- Sisteminize tanımlanmış olan `Olasılık Sunum Kuralları`nı (MEMORY kurallarını), özellikle "overlay (<1->)", kolon (`[T]`) ve görsel taşmama kurallarını kusursuz uyguladığından emin ol.
-- Kullanıcıdan gelen soruları veya anlatımları boş frame iskeletlerinin içine doldur. Gerekmiyorsa şablondaki fazla taslak bölümlerini temizle.
+## Not
 
-### 4. Bütünlüğü Koruma
-- Tüm sunumlarda standart olan sayfa yapısını (`İçindekiler` ve kapanıştaki `Yapay Zeka Asistanı`, `Bizi Takip Edin!` slaytları) kullanıcı silmeni özellikle istemedikçe **KESİNLİKLE KORU**.
-- Sonunda projenin hata vermeden derlenebildiğini doğrula.
+- Bu skill artık tam deck yazım talimatı taşımaz.
+- Kaynak seçim, planlama, yazım ve review görevleri yeni ajanlara dağıtılmıştır.

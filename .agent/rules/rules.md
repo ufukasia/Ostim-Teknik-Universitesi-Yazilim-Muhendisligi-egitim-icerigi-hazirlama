@@ -2,231 +2,158 @@
 trigger: always_on
 ---
 
-# Olasılık Sunum Kuralları
+# Haftalık Sunum Kuralları
 
-Bu kurallar `Olasılık` klasöründeki haftalık beamer sunumlarının ortak yapısından türetilmiştir.
-Amaç genel LaTeX tavsiyesi vermek değil, bu projedeki sunum dilini ve iskeletini korumaktır.
+## 1. Amaç
 
-## 1. Temel Şablon
+- Kullanıcı bir ders, hafta, konu ve mümkünse temel kitap verdiğinde sistem ilgili haftaya uygun, kitaba zeminlenmiş, pedagojik olarak savunulabilir ve `lutbeamer` uyumlu bir ders sunumu üretir.
+- Sistem tek aşamalı "güzel slayt" üreticisi gibi değil, kapsam denetimli bir ders tasarım sistemi gibi davranır.
+- Haftalık deck için alt sınır `60` framedir; kitap aynı hafta kapsamında daha fazlasını doğal biçimde destekliyorsa daha uzun deck tercih edilir.
 
-- Sunumlar `\documentclass[light]{lutbeamer}` ile yazılır.
-- Ana ders kimliği korunur:
-  - `\title{MATH 204 -- Olasılık ve İstatistik}`
-  - uygun hafta başlığı için `\subtitle{Hafta X: ...}`
-- Bibliyografya varsa `biblatex + biber` düzeni korunur ve `\addbibresource{references.bib}` kullanılır.
-- Paket ekleme konusunda muhafazakar ol:
-  - Mevcut yapıda sık görülen paketler: `pgfpages`, `ragged2e`, `booktabs`, `amssymb`, `fontawesome5`, `tikz`, `pgfplots`
-  - Yeni paket sadece gerçekten gerekliyse eklenir.
+## 2. Yetki Sırası
 
-## 2. Açılış ve Kapanış İskeleti
+- Öncelik sırası:
+  1. `.agent/rules/rules.md`
+  2. `.agent/skills/mapping.yaml`
+  3. ilgili orchestrator veya agent skill'i
+  4. ilgili reference/example dosyaları
+  5. hedef `.tex`
+- Haftalık kitap temelli sunumlarda varsayılan giriş noktası `weekly_deck_orchestrator` skill'idir.
+- `pdf_book_processor` ve `book_to_slide_source_pipeline` araç katmanıdır; kapsam veya pedagojik karar vermez.
+- `latex_presentation_assistant` ve `question_frame_visual_layout` üretim yardımcısıdır; scope otoritesi değildir.
 
-- Açılışta tipik sıra korunur:
-  1. logolu ya da görselli tam kapak frame’i
-  2. `\maketitle{}`
-  3. `İçindekiler` frame’i
-- `\setbeamertemplate{navigation symbols}{}` korunur.
-- Tüm sunumlarda bölüm başlarında otomatik akış frame’i vardır; `\AtBeginSection[]{...}` yapısını bozma.
-- Kapanışta mümkünse şu yapı korunur:
-  - özet / çıkış bileti
-  - kaynaklar
-  - gerekiyorsa haftalık uygulama veya yapay zeka asistanı frame’i
-  - en sonda `plain,noframenumbering` kapanış frame’i
+## 3. Minimal Ajan Mimarisi
 
-## 3. Bölüm Akışı
+- Zorunlu akış:
+  1. `weekly_deck_orchestrator`
+  2. `book_grounder`
+  3. `deck_architect`
+  4. `slide_composer`
+  5. `deck_guard`
+- Varsayılan olarak aynı anda yalnızca tek aktif alt ajan çalıştırılır.
+- Paralel alt ajan ancak şu iki durumda açılır:
+  - chapter seçimi iki güçlü aday arasında belirsizse
+  - review yalnızca dar bir alt bölüm için ikinci görüş istiyorsa
+- Orchestrator, alt ajanları uzun serbest metinle değil kısa karar nesneleriyle konuşturur.
 
-- Sunumlar `section` ve `subsection` mantığıyla ilerler.
-- Her ana konu genelde şu pedagojik zinciri izler:
-  1. motivasyon veya kavramsal giriş
-  2. tanım / temel fikir
-  3. kısa örnek veya uygulama
-  4. pekiştirme sorusu
-  5. çözüm
-- Kullanıcı özellikle istemedikçe konuları sadece formül yığını olarak verme.
-- Haftalar arası köprü kur:
-  - “Hafta X’ten ne getiriyoruz?”
-  - “Bu hafta neyi ölçeceğiz / öğreneceğiz?”
-  - “Bir sonraki haftaya köprü”
+## 4. Karar Nesnesi Sözleşmesi
 
-## 4. Frame Tasarım Kuralları
+- Her alt ajan yalnızca yapılandırılmış ve kısa bir karar nesnesi üretir.
+- Zorunlu alanlar:
+  - `decision_summary`
+  - `required_items`
+  - `forbidden_items`
+  - `handoff_target`
+- İsteğe bağlı alanlar:
+  - `risks`
+  - `revision_requests`
+- Boş alan yazılmaz.
+- Her ajan yalnızca önceki aşamadan farklı olan kararları yazar.
+- Aynı bilginin paragraf halinde tekrar edilmesi yasaktır.
 
-- Varsayılan olarak kısa ve yoğun frame yaz.
-- Bir frame tek ana fikir taşısın.
-- Uzun soru veya çözüm tek frame’e sıkıştırılmamalı:
-  - gerekirse `Soru`
-  - sonra `Çözüm`
-  - çok uzunsa `Detaylı Çözüm`
-- `columns` kullanıldığında tercih edilen yapı:
+## 5. Kitap ve Kapsam Kuralları
 
-```latex
-\begin{columns}[T]
-  \begin{column}{0.48\textwidth}
-    ...
-  \end{column}
-  \begin{column}{0.48\textwidth}
-    ...
-  \end{column}
-\end{columns}
-```
+- Birincil hakikat kaynağı temel kitaptır.
+- Sunum yalnızca ilgili hafta kapsamı içinde kalır.
+- Sonraki haftanın ana konusu erkenden anlatılmaz.
+- Önceki hafta bilgisi yalnızca kısa köprü kurmak için kullanılır.
+- Kitapta açıkça bulunmayan çekirdek teori, varsayılan olarak reddedilir.
+- Gerekli kaynak sırası:
+  1. split manifest / chapter sidecar / relative TOC
+  2. `subsection_manifest.json`, `subsection_index.md`, `deck_source_brief.md`
+  3. ilgili chunk veya page export dosyaları
+  4. yakın hafta `.tex` dosyaları
+  5. ham PDF
+- Ham PDF'ye doğrudan dönüş istisnadır; önce kaynak paketleri kullanılır.
+- Matematik ağırlıklı kitaplarda formül, tablo ve grafik kaybı aktif risk kabul edilir.
+- `picture omitted` benzeri placeholder satırları nihai bilgi sayılmaz; varsa ilgili page/chunk export ve extraction sinyalleri okunur.
+- Zayıf OCR sonucu native extraction'ı sessizce ezemez.
+- Source pack tarafında `page_signal_summary`, `ingest_signals`, `ocr_requested` ve `ocr_reasons` alanları varsa bunlar karar girdisi sayılır.
 
-- Yaygın kolon genişlikleri:
-  - `0.48 / 0.48` iki kolon için
-  - `0.62 / 0.35` görsel + açıklama türü yerleşimler için
-- Top hizalama için `[T]` tercih edilir.
-- İçerik taşacaksa önce metni sadeleştir, sonra `\small` veya `\scriptsize` kullan.
+## 6. Pedagoji Kuralları
 
-## 5. Block Kullanımı
+- Her frame'in açık pedagojik amacı bulunur.
+- Deck planı `60` frameden az olamaz.
+- Tanım verilmeden yöntem, örnek veya soru anlatılmaz.
+- Kavram sırası öğrenme bağımlılıklarına göre kurulur.
+- Notasyon ve terminoloji sunum boyunca tutarlı kalır.
+- Her ana konu için varsayılan mikro akış:
+  1. kısa köprü veya motivasyon
+  2. sezgi
+  3. tanım / temel ifade
+  4. örnek veya görsel temsil
+  5. konu sonu soru
+  6. çözüm için durak
+  7. çözüm
+- Her ayrı konu anlatımının arkasında en az bir anlatımlı örnek ve en az bir soru/çözüm zinciri bulunur.
+- Sorular doğrudan çeviri gibi kurulamaz; doğal Türkçe, gerçekçi bağlam ve lisans seviyesi mühendislik aklı taşımalıdır.
+- Kolay soru varsa aynı konu için en az bir normal zorlukta ölçücü soru veya çözüm zinciri de bulunur.
+- Bir frame tek ana fikir taşır.
+- Yüzeysel özet yerine öğretilebilir akış önceliklidir.
+- İlk plan `60` frame altında kalıyorsa kapsam dışına çıkmadan şu yollarla genişletilir:
+  1. sezgi ile formel tanımı ayrı framelere böl
+  2. notasyon ve okuma frame'i ekle
+  3. ikinci worked example ekle
+  4. karşılaştırma / sık hata / yorum frame'i ekle
+  5. ana konu sonuna ek soru zinciri ekle
+- Formül veya grafik ağırlıklı birimlerde notasyon okuma, şekil okuma veya tablo yorum frame'i atlanmaz.
 
-- `block`: tanım, temel fikir, senaryo, çözüm adımı
-- `exampleblock`: örnek, uygulama, mühendislik vakası, soru
-- `alertblock`: gerçekten vurgulanması gereken sonuç, kritik yorum, sık hata, karar mesajı
-- `alertblock` kullanımı yasak değil; bu projede bilinçli vurgu için kullanılıyor.
-- Aynı frame içinde bloklar çoğu zaman şu düzenle akar:
-  - solda açıklama / soru
-  - sağda çözüm / yorum
+## 7. Üretim Kuralları
 
-## 6. Dil ve Ton
-
-- Tüm içerik Türkçe yazılır.
-- Teknik terimler gerektiğinde İngilizcesi parantez içinde verilebilir:
-  - örn. `Birikimli Dağılım Fonksiyonu (CDF)`
-- Dil öğretici ama mekanik olmayan olmalı.
-- Sık kullanılan ifade türleri:
-  - `Motivasyon`
-  - `Kavramsal köprü`
-  - `Uygulama`
-  - `Yorum`
-  - `Sık hata`
-  - `Çıkış bileti`
-- Anlatım sadece tanım vermemeli; yorum ve karar bağlamı da içermeli.
-
-## 7. Örnek ve Soru Politikası
-
-- Sorular mümkün olduğunca mühendislik, üretim, kalite kontrol, yazılım, elektronik, sistem güvenilirliği gibi bağlamlarla yazılmalı.
-- Soru yerleşimi konu anlatımının hemen arkasından gelmeli.
-- Kısa soru/çözüm için iki kolonlu tek frame kullanılabilir.
-- Uzun sorularda ayrı frame aç:
-  - `Soru n: ...`
-  - `Soru n: Çözüm`
-  - gerekiyorsa `Soru n: Detaylı Çözüm`
-- Çözüm sadece işlem vermemeli; son satırda kısa yorum içermeli.
-
-## 8. Matematik Yazımı
-
-- Matematiksel anlatım sade ve ders anlatımına uygun olmalı.
-- Gereksiz numaralı denklem kullanma; çoğu durumda `\[...\]`, `align*`, `aligned` yeterlidir.
-- Uzun eşitlikleri tek satırda taşırma:
-  - satır kır
-  - `aligned` kullan
-  - gerekiyorsa yazıyı küçült
-- Metin içi matematik kısa tutulmalı.
-- Sonuçlar mümkünse yorumlanmalı:
-  - sadece sayı değil, ne anlama geldiği de yazılmalı.
-
-## 9. Fragile ve Özel Yapılar
-
-- `fragile` sadece gerçekten gerektiğinde kullanılmalı.
-- Bu projede `fragile` en çok şu durumlarda görülür:
-  - verbatim benzeri içerik
-  - hassas matematik / özel yapı kombinasyonları
-  - quiz veya özel formatlı frame’ler
-- Her frame’e refleks olarak `fragile` ekleme.
-
-## 10. Görsel ve TikZ Kullanımı
-
-- Görseller anlatımı desteklemeli; süs için eklenmemeli.
-- `tikz` ve `pgfplots` aktif olarak kullanılıyor; mevcut görsel dil korunmalı.
-- Genişlikler çoğunlukla bağlama göre verilir:
-  - `\textwidth`
-  - `\linewidth`
-  - `\paperwidth / \paperheight` kapaklarda
-- Görsel içeren frame’lerde genelde bir taraf açıklama, diğer taraf görseldir.
-
-## 11. İçindekiler ve Akış Sayfaları
-
-- `İçindekiler` frame’i genelde iki kolonlu verilir.
-- `\tableofcontents` için section grupları haftaya göre bölünebilir.
-- Uzun sunumlarda bölüm başlangıçlarında `Sunum Akışı` veya `Sunum Planı` frame’i kullanılmalıdır.
-
-## 12. Kaynaklar ve Son Bölümler
-
-- Kaynaklar frame’i genelde:
-
-```latex
-\begin{frame}[allowframebreaks]{Kaynaklar}
-```
-
-- `allowframebreaks` esas olarak kaynaklar ve gerçekten uzun detaylı çözüm frame’lerinde kullanılabilir.
-- Projede bazı haftalarda `Yapay Zeka Asistanınız: NotebookLM` benzeri kapanış frame’leri var; kullanıcı aksini istemedikçe bu çizgi korunabilir.
-
-## 13. Yasak veya Kaçınılacak Davranışlar
-
-- Genel amaçlı, şablondan kopuk beamer tavsiyeleri dayatma.
-- `Madrid`, `beaver` gibi başka tema önerileri getirme; mevcut tema `lutbeamer`.
-- Her yere aşırı `\pause`, overlay veya animasyon ekleme.
-- İçeriği sırf kısa olsun diye pedagojik akışı bozma.
-- Uzun paragrafı küçücük puntoda tek frame’e gömme.
-- Mühendislik bağlamı istenmişken soyut ve bağlamsız örnekler yazma.
-- `alertblock` kullanımını tamamen yasaklama; bu projede meşru kullanım alanı var.
-- Kullanıcı istemedikçe dosyanın tamamını yeniden yazma/reformat etme.
-- Kullanıcı istemedikçe `.tex` dosyasında toplu bul-değiştir (global replace) yapma.
-- `.tex` dosyalarını script ile otomatik yeniden üretme/rewrite etme.
-
-## 14. Yeni Hafta Üretirken İzlenecek Kalıp
-
-- Yeni hafta hazırlarken mümkünse şu omurga kullan:
+- Sınıf korunur: `\documentclass[light]{lutbeamer}`
+- Açılış zinciri korunur:
   1. kapak
-  2. içindekiler
-  3. önceki haftadan köprü / motivasyon
-  4. kavram haritası veya öğrenme hedefi
-  5. ana bölüm 1
-  6. ilgili soru ve çözüm
-  7. ana bölüm 2
-  8. ilgili soru ve çözüm
-  9. özet / mini-quiz / çıkış bileti
-  10. kaynaklar
-  11. gerekiyorsa AI asistanı / kapanış
+  2. `\maketitle{}`
+  3. `İçindekiler`
+- Kapanış zinciri mümkün oldukça korunur:
+  1. özet veya çıkış bileti
+  2. kaynaklar
+  3. gerekiyorsa uygulama / kapanış
+  4. `plain,noframenumbering`
+- Ana anlatım varsayılan olarak kutusuzdur.
+- Renkli box'lar yalnızca ikincil semantik vurgu içindir.
+- Soru ve çözüm aynı frame'e sıkıştırılmaz.
+- Görsel kalite önemlidir; ancak dekoratif içerik akademik doğruluğun önüne geçemez.
+- Görseller veri, karşılaştırma, sezgi veya çözüm akışı taşımalıdır.
+- Türkçe metinler gerçek Türkçe karakterlerle yazılır; ASCII kaçışı yasaktır.
+- Formül, tablo veya grafik sinyali taşıyan kaynak sayfalar deck'e geçince sade paragraf özetine indirgenemez; ilgili matematiksel içerik görünür kalmalıdır.
 
-## 15. Ajan İçin Son Kontrol Listesi
+## 8. Derleme ve Bütünlük
 
-- Bu hafta başlığı ve ders kimliği doğru mu?
-- Açılış sırası bozuldu mu?
-- Section/subsection yapısı korunuyor mu?
-- Konu anlatımı hemen ardından örnek veya soru geliyor mu?
-- Sorular mühendislik bağlamlı mı?
-- Uzun çözüm gerekiyorsa ayrı frame açıldı mı?
-- İki kolonlu frame’lerde genişlikler güvenli mi?
-- Taşma riski olan frame’ler sadeleştirildi mi?
-- Kapanışta özet ve kaynaklar var mı?
-- Yeni içerik mevcut haftaların tonuyla uyumlu mu?
+- Türkçe karakter içeren `lutbeamer` sunumlarında varsayılan hat:
+  - `latexmk -g -xelatex`
+- Bibliyografya varsa:
+  - `% !TeX program = xelatex`
+  - `% !BIB program = biber`
+- `biblatex+biber` kullanan dosyalarda BibTeX'e dönülmez.
+- Zorunlu log kontrolü:
+  - `rg -n "Missing character|There is no" <log>`
+- Mümkünse PDF metni de kontrol edilir:
+  - `pdftotext <pdf> -`
+- Türkçe bütünlük denetimi başarısızsa teslim yapılmaz.
 
-## 16. Karakter ve Encoding Güvenliği (KIRMIZI ÇİZGİ)
+## 9. Review Gate
 
-Bu bölüm zorunludur. İhlal edilirse değişiklik geçersiz sayılır.
+- Review aşaması geçmeden final çıktı teslim edilmez.
+- `60` frameden kısa deck bloklayıcı hata sayılır.
+- Review en az şu riskleri tarar:
+  - konu sızıntısı
+  - eksik çekirdek kavram
+  - gereksiz tekrar
+  - tanım-atlama
+  - terminoloji kayması
+  - pedagojik kopukluk
+  - yüzeysellik
+  - bağlamsız veya yapay soru kurgusu
+  - kolay soru olup ölçücü soru olmaması
+  - formül / tablo / grafik kaybı
+  - extraction sinyali olan sayfaların deck'te izsiz kaybolması
+- Bloklayıcı hata varsa `revision_requests` ile üretime geri dönülür.
 
-- Bu projedeki `.tex`, `.bib`, `.md` metin dosyaları UTF-8 olarak korunur.
-- Türkçe karakterler aynen korunur: `ı İ ş Ş ğ Ğ ü Ü ö Ö ç Ç`.
-- Türkçe metinleri ASCII'ye dönüştürmek yasak:
-  - `ş -> s`, `ğ -> g`, `ü -> u`, `ö -> o`, `ç -> c`, `ı -> i` gibi sadeleştirme yapılamaz.
-- Mojibake/bozuk encoding çıktıları kesinlikle yasak:
-  - `Ã`, `Ä`, `Å`, `â€™`, `â€œ`, `â€`, `ÅŸ`, `Ä±` vb.
-- Normal metin içinde Unicode escape/entity kullanımı yasak:
-  - `\u0131`, `&#351;`, `0x...` gibi temsillerle harf yazma.
-- Kullanıcı açıkça istemedikçe Python/shell script ile `.tex` dosyasını baştan yazma yasak.
-- Düzenleme yöntemi varsayılan olarak hedefli patch olmalı; sadece istenen bölüm değiştirilmeli.
-- Kullanıcı istemediği bölgelerde içerik değiştirme, taşıma, yeniden adlandırma yapma.
+## 10. Token Disiplini
 
-### 16.1 Zorunlu Doğrulama (Her Düzenleme Sonrası)
-
-- Şüpheli encoding dizilerini tara:
-  - `rg -n "Ã|Ä|Å|â€™|â€œ|â€|\\\u0|&#[0-9]{2,5};" *.tex`
-- Derleme zinciri doğrulaması yap:
-  - `xelatex` (ve gerekiyorsa `biber`) sonrası logda yeni karakter hatası olmamalı.
-- Logda aşağıdaki tipte hata varsa teslim etmeden düzelt:
-  - `Missing character`
-  - `There is no ... in font`
-
-### 16.2 İhlal Durumunda Zorunlu Davranış
-
-- Karakter bozulması tespit edilirse ajan yeni değişikliğe devam etmez.
-- Önce bozulmayı geri alır veya son sağlam metne döner.
-- Sonra sadece hedef bölge için minimal patch ile tekrar uygular.
+- Tüm chapter'ı bağlama sokma; önce manifest ve brief dosyalarını kullan.
+- Uzun reference dosyalarını yalnızca gerekli bölüm için aç.
+- Aynı bilgiyi her aşamada tekrar etme.
+- Orchestrator, tam deck yazımını alt ajanlara bırakır; kendi üstünde gereksiz içerik taşımaz.
+- Alt ajan sayısı gösteriş için değil, karar sınırlarını netleştirmek için kullanılır.

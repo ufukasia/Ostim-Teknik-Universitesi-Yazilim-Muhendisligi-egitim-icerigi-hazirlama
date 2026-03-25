@@ -36,15 +36,6 @@
     \fancyfoot[C]{\textbf{\sffamily Sayfa \thepage}}
     \fancyhead[C]{%
         \begin{tikzpicture}[remember picture,overlay]
-            \draw[line width=2.2pt] (current page.north west) ++(\ocrMarkerInset,-\ocrMarkerInset) -- ++(\ocrCornerLen,0);
-            \draw[line width=2.2pt] (current page.north west) ++(\ocrMarkerInset,-\ocrMarkerInset) -- ++(0,-\ocrCornerLen);
-            \draw[line width=2.2pt] (current page.north east) ++(-\ocrMarkerInset,-\ocrMarkerInset) -- ++(-\ocrCornerLen,0);
-            \draw[line width=2.2pt] (current page.north east) ++(-\ocrMarkerInset,-\ocrMarkerInset) -- ++(0,-\ocrCornerLen);
-            \draw[line width=2.2pt] (current page.south west) ++(\ocrMarkerInset,\ocrMarkerInset) -- ++(\ocrCornerLen,0);
-            \draw[line width=2.2pt] (current page.south west) ++(\ocrMarkerInset,\ocrMarkerInset) -- ++(0,\ocrCornerLen);
-            \draw[line width=2.2pt] (current page.south east) ++(-\ocrMarkerInset,\ocrMarkerInset) -- ++(-\ocrCornerLen,0);
-            \draw[line width=2.2pt] (current page.south east) ++(-\ocrMarkerInset,\ocrMarkerInset) -- ++(0,\ocrCornerLen);
-
             \node[anchor=north west,inner sep=0pt,xshift=\ocrMarkerInset,yshift=-\ocrMarkerInset] at (current page.north west)
                 {\includegraphics[width=\ocrMarkerSize]{aruco_00.png}};
             \node[anchor=north east,inner sep=0pt,xshift=-\ocrMarkerInset,yshift=-\ocrMarkerInset] at (current page.north east)
@@ -185,7 +176,7 @@
     
     {\Large \textbf{ÖDEV - 2}}\\[1cm]
     
-    \colorbox{yellow}{\large \textbf{TESLİM TARİHİ:} 10.03.2026 -- 20.03.2026}\\[1cm]
+    \colorbox{yellow}{\large \textbf{TESLİM TARİHİ:} 10.03.2026 -- 23.03.2026}\\[1cm]
 \end{center}
     
 \noindent\colorbox{yellow!30}{%
@@ -264,19 +255,17 @@ P(F)=0.15
 
 \vspace{0.5cm}
 
-\item \textbf{(Bayes Teoremi)} Bir fabrikada aynı ürünü üreten 3 makine vardır: $M_1$, $M_2$, $M_3$. Üretim payları:
-\[
-P(M_1)=0.50,\qquad
-P(M_2)=0.30,\qquad
-P(M_3)=0.20
-\]
-Her makinenin hatalı üretim olasılığı:
-\[
-P(H\mid M_1)=0.01,\qquad
-P(H\mid M_2)=0.03,\qquad
-P(H\mid M_3)=0.02
-\]
-Rastgele seçilen bir ürünün hatalı ($H$) olduğu görülüyor. Bu ürünün $M_2$ makinesinden gelmiş olma olasılığı $P(M_2\mid H)$ nedir?
+\item \textbf{(Toplam Olasılık ve Bayes Teoremi)} Bir otomobil fabrikasında gövde kaynakları iki farklı robot tarafından yapılmaktadır:
+\begin{itemize}
+\item Toplam üretimin \%60'ını \textbf{Robot A}, \%40'ını \textbf{Robot B} gerçekleştirmektedir.
+\item Robot A'nın yaptığı kaynakların \%5'i hatalı çıkmaktadır.
+\item Robot B'nin yaptığı kaynakların \%10'u hatalı çıkmaktadır.
+\end{itemize}
+Buna göre;
+\begin{enumerate}
+\item Hat sonunda rastgele seçilen bir gövdede \textbf{hatalı bir kaynak tespit edilme olasılığı} nedir?
+\item Hat sonunda rastgele seçilen bir gövdede \textbf{hatalı bir kaynak tespit edildiğine göre}; bu hatalı kaynağın \textbf{Robot B} tarafından yapılmış olma olasılığı nedir?
+\end{enumerate}
 
 \newpage
 
@@ -304,6 +293,25 @@ ve
 P(\text{Yanlış pozitif}) = 0.06
 \]
 ise, $40$ yaş üstü bir yetişkinin \textbf{kanserli biri olarak teşhis edilip gerçekten kanserli olma olasılığı} nedir?
+\end{enumerate}
+
+\vspace{1cm}
+\section*{\textbf{\color{TitleColor}Sadece Düşün: Ayrık ve Sayılabilir Sonsuz  Rassal Değişken (Puanlandırılmayacak)}}
+
+Bir toplumda her ailenin çocuk sahibi olma davranışı şu şekilde modellenmektedir: Her doğumda çocuğun erkek ya da kız olma olasılığı eşit olup
+\[
+P(\text{Erkek}) = P(\text{Kız}) = \frac{1}{2}
+\]
+şeklindedir. Ayrıca doğumların birbirinden bağımsız olduğu kabul edilmektedir. Her aile, ilk erkek çocuk doğana kadar çocuk sahibi olmaya devam etmekte; ilk erkek çocuk doğduğunda ise artık çocuk sahibi olmamaktadır.
+
+Buna göre aşağıdaki soruları cevaplayınız:
+
+\begin{enumerate}
+    \item[\textbf{a)}] Bir ailenin sahip olduğu toplam çocuk sayısını örnek uzay üzerinden tanımlayınız ve bu deneyin örnek uzayının neden ayrık ve sayılabilir sonsuz olduğunu açıklayınız.
+    \item[\textbf{b)}] Bir ailenin sahip olduğu kız çocuk sayısını gösteren rastgele değişkeni \(X\) ile tanımlayınız. \(X\)'in olasılık kütle fonksiyonunu bulunuz.
+    \item[\textbf{c)}] \(X\) rastgele değişkeninin beklenen değerini hesaplayınız.
+    \item[\textbf{d)}] Her ailenin sonunda tam olarak bir erkek çocukla durduğu bilgisini kullanarak, toplum genelinde uzun vadede beklenen kız çocuk sayısı ile beklenen erkek çocuk sayısını karşılaştırınız.
+    \item[\textbf{\color{ChoiceColor}e)}] \textcolor{ChoiceColor}{\textbf{Elde ettiğiniz sonuçlara dayanarak, bu toplumda uzun vadede kız/erkek oranının nasıl oluşacağını yorumlayınız.}}
 \end{enumerate}
 
 % ════════════════════════════════════════════════════════════════
@@ -338,9 +346,6 @@ ise, $40$ yaş üstü bir yetişkinin \textbf{kanserli biri olarak teşhis edili
 
 \newpage
 
-% ═══════════════════════════════════════════════════════════
-% SAYFA 2 (OCR): Soru 2 — a) CDF Tablosu  + b) ve c) hesap
-% ═══════════════════════════════════════════════════════════
 \begin{tcolorbox}[ocrbox, height=\ocrMainBoxHeight]
 \begin{minipage}[t][8.4cm][t]{\textwidth}
 \vspace*{0.15cm}
@@ -369,20 +374,21 @@ ise, $40$ yaş üstü bir yetişkinin \textbf{kanserli biri olarak teşhis edili
 \newpage
 
 % ═══════════════════════════════════════════════════════════
-% SAYFA 3 (OCR): Soru 3 — Ağaç Diyagramı + Bayes Hesabı
+% SAYFA 3 (OCR): Soru 3 — a) Toplam Olasılık + b) Bayes
 % ═══════════════════════════════════════════════════════════
 \begin{tcolorbox}[ocrbox, height=\ocrMainBoxHeight]
 \begin{minipage}[t][11cm][t]{\textwidth}
-\ocrTopSectionLabel{CEVAP-3 DIAGRAM}
+\ocrTopSectionLabel{CEVAP-3A (Toplam Olasılık ve Ağaç Diyagramı)}
 \vfill
+\ocrTopResultBox{SONUC 3A}
 \end{minipage}
 
 \ocrDivider
 
 \begin{minipage}[t][11cm][t]{\textwidth}
-\ocrInnerSectionLabel{CEVAP-3 COZUM}
+\ocrInnerSectionLabel{CEVAP-3B (Bayes Teoremi)}
 \vfill
-\ocrInnerResultBox{SONUC 3}
+\ocrInnerResultBox{SONUC 3B}
 \end{minipage}
 \end{tcolorbox}
 

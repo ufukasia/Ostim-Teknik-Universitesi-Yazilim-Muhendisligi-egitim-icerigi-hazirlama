@@ -153,57 +153,58 @@ P(X<C)=P(D)+P(E)+P(F)=0.07+0.03+0.15=0.25.
 \end{enumerate}
 
 %--------------------------------------------------------------------
-% SORU 3 — Bayes Teoremi (Makine)
+% SORU 3 — Toplam Olasılık ve Bayes Teoremi (Robot Kaynak)
 %--------------------------------------------------------------------
 \item Verilenler:
 \[
-P(M_1)=0.50,\qquad P(M_2)=0.30,\qquad P(M_3)=0.20,
+P(A)=0.60,\qquad P(B)=0.40,
 \]
 \[
-P(H\mid M_1)=0.01,\qquad P(H\mid M_2)=0.03,\qquad P(H\mid M_3)=0.02.
+P(H\mid A)=0.05,\qquad P(H\mid B)=0.10.
 \]
 
 \begin{center}
 \begin{tikzpicture}[>=latex, line width=0.8pt]
   \node (om) at (0,0) {$\Omega$};
-  \node (m1) at (3.0, 2.2) {$M_1$};
-  \node (m2) at (3.0, 0.0) {$M_2$};
-  \node (m3) at (3.0,-2.2) {$M_3$};
-  \node (h1) at (6.2, 3.0) {$H$};
-  \node (h1c) at (6.2, 1.5) {$H'$};
-  \node (h2) at (6.2, 0.8) {$H$};
-  \node (h2c) at (6.2,-0.7) {$H'$};
-  \node (h3) at (6.2,-1.5) {$H$};
-  \node (h3c) at (6.2,-3.0) {$H'$};
+  \node (ra) at (3.0, 1.5) {$A$};
+  \node (rb) at (3.0,-1.5) {$B$};
+  \node (ha) at (6.2, 2.3) {$H$};
+  \node (hac) at (6.2, 0.8) {$H'$};
+  \node (hb) at (6.2,-0.8) {$H$};
+  \node (hbc) at (6.2,-2.3) {$H'$};
 
-  \draw[->,blue!70!black] (om) -- (m1) node[midway,above] {$0.50$};
-  \draw[->,orange!80!black](om) -- (m2) node[midway,above] {$0.30$};
-  \draw[->,gray!70]        (om) -- (m3) node[midway,below] {$0.20$};
-
-  \draw[->,red!70!black]  (m1) -- (h1)  node[midway,above] {$0.01$};
-  \draw[->,gray!60]       (m1) -- (h1c) node[midway,below] {$0.99$};
-  \draw[->,red!70!black]  (m2) -- (h2)  node[midway,above] {$0.03$};
-  \draw[->,gray!60]       (m2) -- (h2c) node[midway,below] {$0.97$};
-  \draw[->,red!70!black]  (m3) -- (h3)  node[midway,above] {$0.02$};
-  \draw[->,gray!60]       (m3) -- (h3c) node[midway,below] {$0.98$};
+  \draw[->,blue!70!black]  (om) -- (ra)   node[midway,above] {$0.60$};
+  \draw[->,orange!80!black](om) -- (rb)   node[midway,below] {$0.40$};
+  
+  \draw[->,red!70!black]   (ra) -- (ha)   node[midway,above] {$0.05$};
+  \draw[->,gray!60]        (ra) -- (hac)  node[midway,below] {$0.95$};
+  \draw[->,red!70!black]   (rb) -- (hb)   node[midway,above] {$0.10$};
+  \draw[->,gray!60]        (rb) -- (hbc)  node[midway,below] {$0.90$};
 \end{tikzpicture}
 \end{center}
 
-\textbf{Toplam olasılık kuralı ile $P(H)$:}
+\begin{enumerate}
+\item \textbf{Toplam hata olasılığı $P(H)$:} \\
+Hatalı bir parça ya A'dan ya da B'den gelmiş olmalıdır:
 \[
-P(H)=P(H\mid M_1)P(M_1)+P(H\mid M_2)P(M_2)+P(H\mid M_3)P(M_3)
+P(H)=P(H\mid A)P(A)+P(H\mid B)P(B)
 \]
 \[
-P(H)=0.01\cdot0.50+0.03\cdot0.30+0.02\cdot0.20=0.005+0.009+0.004=0.018.
+P(H)=0.05\cdot0.60+0.10\cdot0.40=0.030+0.040=0.070.
+\]
+\[
+{\color{red}\boxed{P(H)=0.07}}
 \]
 
-\textbf{Bayes teoremi ile $P(M_2\mid H)$:}
+\item \textbf{Bayes teoremi ile $P(B\mid H)$:} \\
+Hatalı olduğu bilinen parçanın B'den gelme olasılığı:
 \[
-P(M_2\mid H)=\frac{P(H\mid M_2)\,P(M_2)}{P(H)}=\frac{0.03\cdot0.30}{0.018}=\frac{0.009}{0.018}=0.50.
+P(B\mid H)=\frac{P(H\mid B)\,P(B)}{P(H)}=\frac{0.10\cdot0.40}{0.070}=\frac{0.040}{0.070}=\frac{4}{7}\approx 0.5714.
 \]
 \[
-{\color{red}\boxed{P(M_2\mid H)=0.50}}
+{\color{red}\boxed{P(B\mid H)=\frac{4}{7}\approx 0.5714}}
 \]
+\end{enumerate}
 
 %--------------------------------------------------------------------
 % SORU 4 — Sürekli Rassal Değişken / PDF ve CDF
@@ -297,6 +298,30 @@ P(C\mid +)=\frac{P(+\mid C)\,P(C)}{P(+)}=\frac{0.78\cdot0.05}{0.096}=\frac{0.039
 
 Bu sonuç, test pozitif çıksa bile gerçekten kanserli olma olasılığının yalnızca yaklaşık \%40.6 olduğunu gösterir. Hastalığın toplumda düşük yaygınlıkta ($P(C)=0.05$) olması bu değeri beklenenden küçük kılar.
 
+\end{enumerate}
+
+\vspace{1cm}
+\section*{\textbf{\color{TitleColor}Sadece Düşün: Zor Soru (Puanlandırılmayacak) -- Çözüm}}
+
+Bir toplumda her ailenin çocuk sahibi olma davranışı şu şekilde modellenmektedir: Her doğumda çocuğun erkek ya da kız olma olasılığı eşit olup
+\[
+P(\text{Erkek}) = P(\text{Kız}) = \frac{1}{2}
+\]
+şeklindedir. Her aile, ilk erkek çocuk doğana kadar çocuk sahibi olmaya devam etmekte; ilk erkek çocuk doğduğunda ise artık çocuk sahibi olmamaktadır.
+
+\begin{enumerate}
+    \item[\textbf{a)}] \textbf{Örnek Uzay:} $S = \{E, KE, KKE, \dots\}$. Sonsuza kadar gidebildiği ve tek tek sayılabildiği için ayrık ve sayılabilir sonsuzdur.
+    
+    \item[\textbf{b)}] \textbf{PMF:} $X$ kız çocuk sayısı olsun. Olasılık $p=1/2$ (erkek) olana kadar başarısızlık (kız) olması durumudur (Geometrik Dağılım):
+    \[
+    P(X=x) = \left(\frac{1}{2}\right)^x \cdot \frac{1}{2} = \left(\frac{1}{2}\right)^{x+1}, \quad x=0, 1, 2, \dots
+    \]
+    
+    \item[\textbf{c)}] \textbf{Beklenen Değer:} Geometrik dağılımda $E(X) = \frac{1-p}{p}$ formülünden $E(X) = \frac{1/2}{1/2} = 1$. Beklenen kız sayısı $1$'dir.
+    
+    \item[\textbf{d)}] \textbf{Karşılaştırma:} Aile 1 erkek olunca durduğundan beklenen erkek sayısı $1$'dir. Beklenen kız sayısı da $1$'dir. Demek ki iki değer \textbf{eşittir}.
+    
+    \item[\textbf{\color{ChoiceColor}e)}] \textcolor{ChoiceColor}{\textbf{Yorum: Her ailenin ortalaması 1 kız ve 1 erkek olduğu için toplumun uzun vadedeki kız/erkek oranı değişmez, 1:1 (yarı yarıya) olarak kalır.}}
 \end{enumerate}
 
 \end{document}

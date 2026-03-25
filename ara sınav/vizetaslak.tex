@@ -1,0 +1,478 @@
+\documentclass[12pt,a4paper]{exam}
+
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage{cmap}
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage[turkish,shorthands=:!]{babel}
+  \usepackage{lmodern}
+\else
+  \usepackage{fontspec}
+  \usepackage[turkish,shorthands=:!]{babel}
+  \defaultfontfeatures{Ligatures=TeX}
+  \setmainfont{Latin Modern Roman}
+\fi
+
+\newlength{\TopPageMargin}
+\setlength{\TopPageMargin}{0.2cm}
+\usepackage[a4paper,left=1cm,right=1cm,top=\TopPageMargin,bottom=1cm]{geometry}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{ragged2e}
+\usepackage{tikz}
+\usepackage{eso-pic}
+\usepackage{lipsum}
+\usepackage{xcolor}
+\printanswers
+\unframedsolutions
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\renewcommand{\questionlabel}{\textbf{\thequestion)}}
+\renewcommand{\questionshook}{%
+  \settowidth{\leftmargin}{\textbf{10)}\hskip\labelsep}%
+  \labelwidth\leftmargin
+  \advance\labelwidth-\labelsep
+}
+\renewcommand{\solutiontitle}{\noindent\textbf{Cevap:}\enspace}
+
+% Tum sayfalarda ayni ust sablonu kullanmak icin olculer tek yerde tutulur.
+\newlength{\TopTableWidth}
+\setlength{\TopTableWidth}{\dimexpr\paperwidth-2cm\relax}
+\newlength{\TopTableLeft}
+\setlength{\TopTableLeft}{1cm}
+\newlength{\TopTableTop}
+\setlength{\TopTableTop}{\TopPageMargin}
+\newlength{\FirstTableHeight}
+\setlength{\FirstTableHeight}{3.4cm}
+\newlength{\LeftColWidth}
+\setlength{\LeftColWidth}{0.26\TopTableWidth}
+\newlength{\MidColWidth}
+\setlength{\MidColWidth}{0.50\TopTableWidth}
+\newlength{\RightColWidth}
+\setlength{\RightColWidth}{\dimexpr\TopTableWidth-\LeftColWidth-\MidColWidth\relax}
+\newlength{\BetweenTablesGap}
+\setlength{\BetweenTablesGap}{1cm}
+\newlength{\HeaderToStudentGap}
+\setlength{\HeaderToStudentGap}{-0.6cm}
+\newlength{\TopRowHeight}
+\setlength{\TopRowHeight}{0.9cm}
+\newlength{\BotRowHeight}
+\setlength{\BotRowHeight}{2.2cm}
+\newlength{\StudentTableGap}
+\setlength{\StudentTableGap}{0.12cm}
+\newlength{\StudentToScoreGap}
+\setlength{\StudentToScoreGap}{0.45cm}
+\newlength{\StudentHeaderHeight}
+\setlength{\StudentHeaderHeight}{0.8cm}
+\newlength{\StudentBodyHeight}
+\setlength{\StudentBodyHeight}{1.2cm}
+\newlength{\StudentLeftColWidth}
+\setlength{\StudentLeftColWidth}{0.24\TopTableWidth}
+\newlength{\StudentMidColWidth}
+\setlength{\StudentMidColWidth}{0.52\TopTableWidth}
+\newlength{\StudentRightColWidth}
+\setlength{\StudentRightColWidth}{\dimexpr\TopTableWidth-\StudentLeftColWidth-\StudentMidColWidth\relax}
+\newlength{\ScoreToProgramGap}
+\setlength{\ScoreToProgramGap}{0.18cm}
+\newlength{\ProgramHeaderHeight}
+\setlength{\ProgramHeaderHeight}{0.65cm}
+\newlength{\ProgramRowHeight}
+\setlength{\ProgramRowHeight}{0.58cm}
+\newlength{\ContentTopOffset}
+\setlength{\ContentTopOffset}{\dimexpr
+  \TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+
+  \StudentToScoreGap+\TopRowHeight+\BotRowHeight+\ScoreToProgramGap+
+  \ProgramHeaderHeight+5\ProgramRowHeight+0.6cm\relax}
+
+% Soru sayfalari icin ust bosluk (sadece genel bilgi + ogrenci tablosu)
+\newlength{\QuestionTopOffset}
+\setlength{\QuestionTopOffset}{\dimexpr
+  \TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+0.0cm\relax}
+
+\newcommand{\DrawPageTemplate}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[shift={(current page.north west)}]
+    % 1 satir 3 sutun tablo
+    \draw[line width=0.4pt,draw=white]
+      (\TopTableLeft,-\TopTableTop) rectangle ++(\TopTableWidth,-\FirstTableHeight);
+    \draw[line width=0.4pt,draw=white]
+      (\TopTableLeft+\LeftColWidth,-\TopTableTop) --
+      ++(0,-\FirstTableHeight);
+    \draw[line width=0.4pt,draw=white]
+      (\TopTableLeft+\LeftColWidth+\MidColWidth,-\TopTableTop) --
+      ++(0,-\FirstTableHeight);
+
+    \node[anchor=center] at
+      (\TopTableLeft+0.5\LeftColWidth,-\dimexpr\TopTableTop+0.5\FirstTableHeight\relax)
+      {\includegraphics[width=0.99\LeftColWidth,height=2.4cm,keepaspectratio]{logos/logoan.png}};
+
+    \node[anchor=north west,text width=\dimexpr\MidColWidth-0.5cm\relax] at
+      (\TopTableLeft+\LeftColWidth+0.25cm,-\TopTableTop-0.25cm)
+      {\small\RaggedRight
+      Fakülte: Mühendislik\par
+      Bölüm: \dotfill\par
+      Ders Kodu/İsmi: MAT 204 Mühendisler için Olasılık ve İstatistik\par
+      Öğretim Elemanı: \dotfill};
+
+    \node[anchor=north west,text width=\dimexpr\RightColWidth-0.5cm\relax] at
+      (\TopTableLeft+\LeftColWidth+\MidColWidth+0.25cm,-\TopTableTop-0.25cm)
+      {\small\RaggedRight
+      \textbf{Sınav Evrakı}\par
+      \textbf{ARA SINAV}\par\vspace{0.15cm}
+      Tarih: 29/03/2026\par
+      Süre: 60 dakika};
+
+    % Ogrenci bilgi tablosu
+    \draw[line width=0.5pt]
+      (\TopTableLeft,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap\relax)
+      rectangle ++(\TopTableWidth,-\dimexpr\StudentHeaderHeight+\StudentBodyHeight\relax);
+    \draw[line width=0.5pt]
+      (\TopTableLeft+\StudentLeftColWidth,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap\relax)
+      -- ++(0,-\dimexpr\StudentHeaderHeight+\StudentBodyHeight\relax);
+    \draw[line width=0.5pt]
+      (\TopTableLeft+\StudentLeftColWidth+\StudentMidColWidth,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap\relax)
+      -- ++(0,-\dimexpr\StudentHeaderHeight+\StudentBodyHeight\relax);
+    \draw[line width=0.5pt]
+      (\TopTableLeft,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight\relax)
+      -- ++(\TopTableWidth,0);
+
+    \node[anchor=center] at
+      (\TopTableLeft+0.5\StudentLeftColWidth,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+0.5\StudentHeaderHeight\relax)
+      {\small\textbf{Öğrenci No}};
+    \node[anchor=center] at
+      (\TopTableLeft+\StudentLeftColWidth+0.5\StudentMidColWidth,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+0.5\StudentHeaderHeight\relax)
+      {\small\textbf{Öğrenci Adı-Soyadı}};
+    \node[anchor=center] at
+      (\TopTableLeft+\StudentLeftColWidth+\StudentMidColWidth+0.5\StudentRightColWidth,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+0.5\StudentHeaderHeight\relax)
+      {\small\textbf{İmza}};
+
+    % Sorular/notlar tablosu
+    \draw[line width=0.5pt]
+      (\TopTableLeft,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap\relax)
+      rectangle ++(\TopTableWidth,-\dimexpr\TopRowHeight+\BotRowHeight\relax);
+    \draw[line width=0.5pt]
+      (\TopTableLeft,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight\relax)
+      -- ++(\TopTableWidth,0);
+    \foreach \i in {1,...,6} {
+      \draw[line width=0.5pt]
+        (\TopTableLeft+\i*\TopTableWidth/7,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap\relax)
+        -- ++(0,-\dimexpr\TopRowHeight+\BotRowHeight\relax);
+    }
+
+        
+    \node[anchor=center] at
+      (\TopTableLeft+0.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+0.5\TopRowHeight\relax)
+      {\small\textbf{Sorular}};
+    \node[anchor=center] at
+      (\TopTableLeft+1.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+0.5\TopRowHeight\relax)
+      {\small\textbf{S1}};
+    \node[anchor=center] at
+      (\TopTableLeft+2.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+0.5\TopRowHeight\relax)
+      {\small\textbf{S2}};
+    \node[anchor=center] at
+      (\TopTableLeft+3.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+0.5\TopRowHeight\relax)
+      {\small\textbf{S3}};
+    \node[anchor=center] at
+      (\TopTableLeft+4.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+0.5\TopRowHeight\relax)
+      {\small\textbf{S4}};
+    \node[anchor=center] at
+      (\TopTableLeft+5.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+0.5\TopRowHeight\relax)
+      {\small\textbf{S5}};
+    \node[anchor=center] at
+      (\TopTableLeft+6.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+0.5\TopRowHeight\relax)
+      {\small\textbf{TOPLAM}};
+
+    \node[anchor=south] at
+      (\TopTableLeft+0.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight-0.2cm\relax)
+      {\small\textbf{Notlar}};
+    \node[anchor=south] at
+      (\TopTableLeft+1.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight-0.2cm\relax)
+      {$\dfrac{}{\mathbf{20}}$};
+    \node[anchor=south] at
+      (\TopTableLeft+2.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight-0.2cm\relax)
+      {$\dfrac{}{\mathbf{20}}$};
+    \node[anchor=south] at
+      (\TopTableLeft+3.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight-0.2cm\relax)
+      {$\dfrac{}{\mathbf{20}}$};
+    \node[anchor=south] at
+      (\TopTableLeft+4.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight-0.2cm\relax)
+      {$\dfrac{}{\mathbf{20}}$};
+    \node[anchor=south] at
+      (\TopTableLeft+5.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight-0.2cm\relax)
+      {$\dfrac{}{\mathbf{20}}$};
+    \node[anchor=south] at
+      (\TopTableLeft+6.5*\TopTableWidth/7,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight-0.2cm\relax)
+      {$\dfrac{}{\mathbf{100}}$};
+
+    \node[anchor=north west] at
+      (\dimexpr\TopTableLeft-0.12cm\relax,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight+\ScoreToProgramGap\relax)
+      {%
+        \scriptsize
+        \renewcommand{\arraystretch}{1.9}%
+        \setlength{\tabcolsep}{2.2pt}%
+        \centering
+        \begin{tabular*}{\TopTableWidth}{@{\extracolsep{\fill}}|>{\centering\arraybackslash}m{0.9cm}|*{14}{>{\centering\arraybackslash}m{0.72cm}|}}
+        \hline
+        \textbf{P*/S} & \textbf{1.1} & \textbf{1.2} & \textbf{2.1} & \textbf{2.2} & \textbf{2.3} & \textbf{4.1} & \textbf{5.3} & \textbf{6.3} & \textbf{7.1} & \textbf{7.2} & & & & \\ \hline
+        \textbf{1} & $\times$ & $\times$ & $-$ & $\times$ & $-$ & $-$ & $\times$ & $\times$ & $\times$ & $\times$ & & & & \\ \hline
+        \textbf{2} & $\times$ & $\times$ & $\times$ & $\times$ & $-$ & $-$ & $\times$ & $\times$ & $\times$ & $\times$ & & & & \\ \hline
+        \textbf{3} & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & & & & \\ \hline
+        \textbf{4} & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & & & & \\ \hline
+        \textbf{5} & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & & & & \\ \hline
+        \end{tabular*}%
+      };
+    \node[anchor=north west,text width=\TopTableWidth] at
+      (\dimexpr\TopTableLeft-0.08cm\relax,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight+\StudentBodyHeight+\StudentToScoreGap+\TopRowHeight+\BotRowHeight+\ScoreToProgramGap+\ProgramHeaderHeight+5\ProgramRowHeight+0.42cm\relax)
+      {\scriptsize (*) Program çıktıları için Program Çıktıları Alt Bileşenleri isimli dosyaya bakınız.};
+    \end{scope}
+  \end{tikzpicture}%
+}
+
+% Soru sayfalari icin sadece genel bilgi + ogrenci bilgi tablosu
+\newcommand{\DrawQuestionPageTemplate}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[shift={(current page.north west)}]
+    % 1 satir 3 sutun tablo (beyaz cerceveli genel bilgi)
+    \draw[line width=0.4pt,draw=white]
+      (\TopTableLeft,-\TopTableTop) rectangle ++(\TopTableWidth,-\FirstTableHeight);
+    \draw[line width=0.4pt,draw=white]
+      (\TopTableLeft+\LeftColWidth,-\TopTableTop) --
+      ++(0,-\FirstTableHeight);
+    \draw[line width=0.4pt,draw=white]
+      (\TopTableLeft+\LeftColWidth+\MidColWidth,-\TopTableTop) --
+      ++(0,-\FirstTableHeight);
+
+    \node[anchor=center] at
+      (\TopTableLeft+0.5\LeftColWidth,-\dimexpr\TopTableTop+0.5\FirstTableHeight\relax)
+      {\includegraphics[width=0.99\LeftColWidth,height=2.4cm,keepaspectratio]{logos/logoan.png}};
+
+    \node[anchor=north west,text width=\dimexpr\MidColWidth-0.5cm\relax] at
+      (\TopTableLeft+\LeftColWidth+0.25cm,-\TopTableTop-0.25cm)
+      {\small\RaggedRight
+      Fakülte: Mühendislik\par
+      Bölüm: \dotfill\par
+      Ders Kodu/İsmi: MAT 204 Mühendisler için Olasılık ve İstatistik\par
+      Öğretim Elemanı: \dotfill};
+
+    \node[anchor=north west,text width=\dimexpr\RightColWidth-0.5cm\relax] at
+      (\TopTableLeft+\LeftColWidth+\MidColWidth+0.25cm,-\TopTableTop-0.25cm)
+      {\small\RaggedRight
+      \textbf{Sınav Evrakı}\par
+      \textbf{VİZE SINAVI}\par\vspace{0.15cm}
+      Tarih: 29/03/2026\par
+      Süre: 60 dakika};
+
+    % Ogrenci bilgi tablosu
+    \draw[line width=0.5pt]
+      (\TopTableLeft,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap\relax)
+      rectangle ++(\TopTableWidth,-\dimexpr\StudentHeaderHeight+\StudentBodyHeight\relax);
+    \draw[line width=0.5pt]
+      (\TopTableLeft+\StudentLeftColWidth,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap\relax)
+      -- ++(0,-\dimexpr\StudentHeaderHeight+\StudentBodyHeight\relax);
+    \draw[line width=0.5pt]
+      (\TopTableLeft+\StudentLeftColWidth+\StudentMidColWidth,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap\relax)
+      -- ++(0,-\dimexpr\StudentHeaderHeight+\StudentBodyHeight\relax);
+    \draw[line width=0.5pt]
+      (\TopTableLeft,-\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+\StudentHeaderHeight\relax)
+      -- ++(\TopTableWidth,0);
+
+    \node[anchor=center] at
+      (\TopTableLeft+0.5\StudentLeftColWidth,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+0.5\StudentHeaderHeight\relax)
+      {\small\textbf{Öğrenci No}};
+    \node[anchor=center] at
+      (\TopTableLeft+\StudentLeftColWidth+0.5\StudentMidColWidth,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+0.5\StudentHeaderHeight\relax)
+      {\small\textbf{Öğrenci Adı-Soyadı}};
+    \node[anchor=center] at
+      (\TopTableLeft+\StudentLeftColWidth+\StudentMidColWidth+0.5\StudentRightColWidth,
+      -\dimexpr\TopTableTop+\FirstTableHeight+\HeaderToStudentGap+0.5\StudentHeaderHeight\relax)
+      {\small\textbf{İmza}};
+    \end{scope}
+  \end{tikzpicture}%
+}
+
+\AddToShipoutPictureFG*{\DrawPageTemplate}
+
+\begin{document}
+\vspace*{\ContentTopOffset}
+
+{\small
+\vspace{0.3cm}
+\begin{center}
+\textbf{SINAV KURALLARI}
+\end{center}
+\vspace{0.1cm}
+\noindent\textbf{Aşağıda belirtilen sınav kurallarını dikkatlice okuyup eksiksiz uygulayınız.}
+\vspace{-0.1cm}
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}\setlength{\parsep}{0pt}
+    \item \textbf{Zamanında geliniz:} Sınav başlamadan önce salonda hazır bulununuz.
+    \item \textbf{Geç giriş:} Sınava giriş yalnızca ilk on beş (15) dakika içinde mümkündür.
+    \item \textbf{Erken çıkış:} İlk otuz (30) dakika içinde hiçbir öğrenci salondan ayrılamaz.
+    \item \textbf{Kimliğinizi getiriniz:} Öğrenci kimliğinizi veya onaylı bir kimlik belgesini hazır bulundurunuz.
+    \item \textbf{Elektronik cihaz yasaktır:} Hesap makinesi, telefon, akıllı saat, kulaklık ve diğer izinsiz cihazlar kapalı olmalı ve sıradan uzak tutulmalıdır; yalnızca açıkça izin verilirse kullanılabilir.
+    \item \textbf{İzinsiz materyal yasaktır:} Kitaplar, notlar, kağıtlar, çantalar ve benzeri eşyalar, izin verilmedikçe sıranın üstünde veya altında bulunmamalıdır.
+    \item \textbf{Talimatlara uyunuz:} Öğretim elemanı ve gözetmenlerin tüm talimatlarına uyunuz.
+    \item \textbf{İletişim yasaktır:} Diğer öğrencilerle konuşmak, işaretleşmek veya herhangi bir şekilde iletişim kurmak yasaktır.
+    \item \textbf{Materyal alışverişi yasaktır:} İzin verilmedikçe herhangi bir materyali ödünç almayınız, vermeyiniz veya değiştirmeyiniz.
+    \item \textbf{Kopya çekmek yasaktır:} Kopya çekmek, kopya girişiminde bulunmak veya şüpheli davranış sergilemek disiplin işlemine yol açabilir.
+    \item \textbf{Süre bitince yazmayı bırakınız:} Sınavın bittiği bildirildiğinde yazmayı derhal durdurunuz.
+    \item \textbf{Tüm evrakları teslim ediniz:} Ayrılmadan önce tüm kağıtları ve cevap formlarını teslim ediniz.
+    \item \textbf{Sessizlik ve düzeni koruyunuz:} Sınav boyunca sessizlik ve uygun davranış sürdürülmelidir.
+    \item \textbf{Önemli:} Bu kuralların ihlali, sınavın geçersiz sayılmasına ve/veya disiplin işlemlerine neden olabilir.
+\end{itemize}
+
+\vspace{0.1cm}
+\textbf{Öğrenci Beyanı:} \textit{Yukarıda belirtilen sınav kurallarını okuduğumu, anladığımı ve bu kurallara uymayı kabul ettiğimi  yukarı sağa imza atarak beyan ederim.}
+}
+
+\bigskip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% ====================  SORU SAYFALARI  ====================
+
+\begin{questions}
+
+\newpage
+\AddToShipoutPictureFG*{\DrawQuestionPageTemplate}
+\vspace*{\QuestionTopOffset}
+
+\question Bir torbada 5 kırmızı ve 3 mavi bilye vardır. Torba\-dan rastgele 2 bilye çekildiğinde, her ikisinin de kırmızı olma olasılığı aşağıdakilerden hangisidir?
+
+\begin{choices}
+\choice $\dfrac{3}{28}$
+\choice $\dfrac{5}{14}$
+\choice $\dfrac{10}{28}$
+\choice $\dfrac{15}{28}$
+\end{choices}
+
+\begin{solution}
+Dummy cevap: Doğru seçenek, iki kırmızı bilyenin kombinasyonla seçilmesine karşılık gelen olasılıktır.
+\end{solution}
+
+\vfill
+
+% -------------------------------------------------------
+\newpage
+\AddToShipoutPictureFG*{\DrawQuestionPageTemplate}
+\vspace*{\QuestionTopOffset}
+
+\question Bir zar iki kez atılıyor. İlk atışta 4'ten büyük sayı gelmesi ve ikinci atışta çift sayı gelmesi olayları için aşağıdakilerden hangisi doğrudur?
+
+\begin{choices}
+\choice Olaylar bağımlıdır; çünkü aynı zara aittir.
+\choice Olaylar bağımsızdır; çünkü farklı atışlara aittir.
+\choice Olaylar bağımsız değildir; çünkü kesişimleri yoktur.
+\choice Karar verilemez; ek bilgi gerekir.
+\end{choices}
+
+\begin{solution}
+Dummy cevap: Doğru seçenek, olayların farklı atışlarda gerçekleştiğini belirten seçenektir.
+\end{solution}
+
+\vfill
+
+% -------------------------------------------------------
+\newpage
+\AddToShipoutPictureFG*{\DrawQuestionPageTemplate}
+\vspace*{\QuestionTopOffset}
+
+\question Bir sınıfta 30 öğrenci bulunmaktadır. 18 öğrenci matematik, 12 öğrenci fizik dersini almıştır. Her iki dersi de alan 6 öğrenci vardır. Rastgele seçilen bir öğrencinin en az bir ders almış olma olasılığını bulunuz.
+
+\begin{solution}
+Dummy cevap: Dahil etme-çıkarma yöntemi ile en az bir dersi alan öğrenci sayısı bulunur ve 30'a bölünür.
+\end{solution}
+
+\vfill
+
+% -------------------------------------------------------
+\newpage
+\AddToShipoutPictureFG*{\DrawQuestionPageTemplate}
+\vspace*{\QuestionTopOffset}
+
+\question Bir fabrikada üretilen ürünlerin \%3'ü kusurludur. Rastgele seçilen 10 üründen en az birinin kusurlu olma olasılığını ifade eden doğru seçenek hangisidir?
+
+\begin{choices}
+\choice $(0.03)^{10}$
+\choice $1-(0.97)^{10}$
+\choice $1-(0.03)^{10}$
+\choice $(0.97)^{10}$
+\end{choices}
+
+\begin{solution}
+Dummy cevap: Doğru seçenek, tüm ürünlerin sağlam olma olasılığının 1'den çıkarılmasıdır.
+\end{solution}
+
+\vfill
+
+% -------------------------------------------------------
+\newpage
+\AddToShipoutPictureFG*{\DrawQuestionPageTemplate}
+\vspace*{\QuestionTopOffset}
+
+\question Sürekli bir rastgele değişkenin olasılık yoğunluk fonksiyonu
+\[
+f(x)=\begin{cases} cx^{2}, & 0\le x\le 2,\\ 0, & \text{diğer.}\end{cases}
+\]
+olarak verilmiştir. $c$ sabitini ve $P(1\le X\le 2)$ olasılığını bulunuz.
+
+\begin{solution}
+Dummy cevap: Önce toplam olasılığı 1'e eşitleyerek $c$ bulunur, ardından istenen aralıkta integral alınır.
+\end{solution}
+
+\vfill
+
+\end{questions}
+
+\end{document}

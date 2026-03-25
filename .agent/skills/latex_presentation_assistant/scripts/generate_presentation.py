@@ -54,7 +54,7 @@ def main():
     content.append(r"\setdepartment{OSTİM TEKNİK ÜNİVERSİTESİ}")
     content.append(r"\institute[Yazılım Mühendisliği]{YAZILIM MÜHENDİSLİĞİ BÖLÜMÜ}")
     content.append(r"\author[Mühendislik Fakültesi]{\\Prof.~Dr.~Yalçın ATA,\\ ")
-    content.append(r"Prof.~Dr.~Arif DEMİR,\\ Dr.~Öğr.~Üyesi~Emel GÜVEN,\\ Dr.~Öğr.~Üyesi~Ufuk ASIL,\\ Dr.~Öğr.~Üyesi~Haydar KILIÇ,\\ Dr.~Öğr.~Üyesi~Muhammed ELMNEFİ,\\ Öğr.~Gör.~Sema ÇİFTÇİ}")
+    content.append(r"Prof.~Dr.~Arif DEMİR,\\ Dr.~Öğr.~Üyesi~Muhammed ELMNEFİ,\\ Dr.~Öğr.~Üyesi~Haydar KILIÇ,\\ Dr.~Öğr.~Üyesi~Emel GÜVEN,\\ Dr.~Öğr.~Üyesi~Ufuk ASIL,\\ Öğr.~Gör.~Sema ÇİFTÇİ}")
     content.append(r"\title{MATH 204 -- Olasılık ve İstatistik}")
     content.append(f"\\subtitle{{Hafta {args.week}: {args.topic}}}")
     content.append(r"\date{2026 Bahar}")

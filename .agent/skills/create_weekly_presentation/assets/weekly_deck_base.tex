@@ -1,0 +1,182 @@
+% !TeX program = xelatex
+% !BIB program = biber
+\documentclass[light]{lutbeamer}
+\usepackage{pgfpages}
+\usepackage{ragged2e}
+\usepackage{booktabs}
+\usepackage{amssymb}
+\usepackage{fontawesome5}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\addbibresource{references.bib}
+
+% ===================================================================
+% METADATA
+% Replace placeholders after copying this asset into the target week file.
+% ===================================================================
+\setdepartment{OSTIM Teknik Üniversitesi}
+\institute{}
+\author[Mühendislik Fakültesi]{\\
+Prof.~Dr.~Yalçın ATA \\
+Prof.~Dr.~Arif DEMİR \\
+Dr.~Öğr.~Üyesi~Muhammed ELMNEFİ \\
+Dr.~Öğr.~Üyesi~Haydar KILIÇ \\
+Dr.~Öğr.~Üyesi~Emel GÜVEN \\
+Dr.~Öğr.~Üyesi~Ufuk ASIL \\
+Öğr.~Gör.~Sema ÇİFTÇİ
+}
+\title{<COURSE_TITLE>}
+\subtitle{Hafta <WEEK_NO>: <TOPIC>}
+\date{2025--2026 Bahar Dönemi}
+
+% ===================================================================
+% AUTOMATIC TABLE OF CONTENTS
+% Tune the section split after the real section count is known.
+% ===================================================================
+\setcounter{tocdepth}{2}
+
+\AtBeginSection[]{
+  \begin{frame}{Sunum Planı}
+    \scriptsize
+    \begin{columns}[T]
+      \begin{column}{0.48\textwidth}
+        \tableofcontents[sections={1-4}, currentsection]
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \tableofcontents[sections={5-10}, currentsection]
+      \end{column}
+    \end{columns}
+  \end{frame}
+}
+
+\begin{document}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \begin{beamercolorbox}[wd=\paperwidth, ht=10pt, dp=1pt]{footline}
+    \usebeamerfont{footline}
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=south west, xshift=10mm, yshift=.4mm]
+      at (current page.south west)
+      {\insertshortauthor,~\department};
+    \end{tikzpicture}
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=south east, xshift=-5mm, yshift=0.5mm]
+      at (current page.south east)
+      {\insertframenumber \,/\, \inserttotalframenumber};
+    \end{tikzpicture}
+  \end{beamercolorbox}
+}
+
+% ===================================================================
+% COVER
+% ===================================================================
+\begin{frame}<article:0>[plain,noframenumbering]
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=center, at=(current page.center), inner sep=0pt] {
+      \includegraphics[width=\paperwidth, height=\paperheight]{logos/background_figure.jpg}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+{
+  \setbeamertemplate{footline}{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=10pt, dp=1pt]{footline}
+      \usebeamerfont{footline}
+      \begin{tikzpicture}[remember picture,overlay]
+        \node[anchor=south west, xshift=10mm, yshift=.4mm, align=left]
+        at (current page.south west)
+        {\tiny Bu şablon OTU Yazılım Mühendisliği tarafından hazırlanmış olup \href{https://github.com/ufukasia/Ostim-Teknik--niversitesi-Yaz-l-m-M-hendisli-i---Lutbeamer-egitim-i-eri-i-haz-rlama-}{buradan} güncel haline ulaşabilirsiniz.};
+      \end{tikzpicture}
+      \begin{tikzpicture}[remember picture,overlay]
+        \node[anchor=south east, xshift=-5mm, yshift=0.5mm]
+        at (current page.south east)
+        {\insertframenumber \,/\, \inserttotalframenumber};
+      \end{tikzpicture}
+    \end{beamercolorbox}
+  }
+  \maketitle{}
+}
+
+\begin{frame}{İçindekiler}
+  \scriptsize
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-10}]
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ===================================================================
+% CONTENT START
+% Türkçe içerikte ASCII transliterasyon kullanma; gerçek Türkçe karakterleri koru.
+% Fill section / subsection / frame titles first, then content.
+% ===================================================================
+
+% \section{Köprü veya Motivasyon}
+% \subsection{Hatirlatma}
+% \begin{frame}{Hafta N'den Ne Getiriyoruz?}
+% \end{frame}
+
+% \section{Ana Konu 1}
+% \subsection{Temel Kavram}
+% \begin{frame}{Kavrama Giriş}
+% \end{frame}
+% \begin{frame}{Sayisal Örnek}
+% \end{frame}
+% \subsection{Pekiştirme Sorusu}
+% \begin{frame}[t]{Soru 1: ...}
+% \end{frame}
+% \begin{frame}[t]{Soru 1: Çözüm İçin Durak}
+% \end{frame}
+% \begin{frame}[t]{Soru 1: Çözüm}
+% \end{frame}
+
+% ===================================================================
+% CONTENT END
+% ===================================================================
+
+\section{Kaynaklar}
+\begin{frame}[allowframebreaks]{Kaynaklar}
+  \printbibliography{}
+\end{frame}
+
+\appendix
+
+\section{Yapay Zeka Asistanı}
+\begin{frame}{Yapay Zeka Asistanınız: NotebookLM}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \justifying{}
+      \textbf{Ders Materyalleri ile Etkilesime Gecin!}
+
+      Bu dersin sunumlari, notlari ve yardimci icerikleri Google'in gelismis yapay zeka Asistanı \textbf{NotebookLM} sisteminde duzenlenebilir.
+
+      \vspace{1em}
+      \begin{itemize}
+        \item \textbf{Aninda Cevaplar:} Akliniza takilanlari sorun.
+        \item \textbf{Özetler:} Karmasık konulari hizla toparlayin.
+        \item \textbf{Audio Overview:} Dersi podcast gibi dinleyin.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=0.82\linewidth]{figures/notebooklm.jpg}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[plain,noframenumbering]
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=center, at=(current page.center), inner sep=0pt] {
+      \includegraphics[width=\paperwidth, height=\paperheight]{logos/background_figure.jpg}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+\end{document}
+

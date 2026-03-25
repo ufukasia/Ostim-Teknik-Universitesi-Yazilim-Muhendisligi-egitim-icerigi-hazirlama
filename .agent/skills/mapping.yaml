@@ -1,145 +1,240 @@
-version: 1
-project: "Olasilik"
-owner_intent: "LaTeX lutbeamer ders sunumlari + PDF kitap parcalama"
+version: 2
+project: "Olasılık"
+owner_intent: "Temel kitaba sadık, kapsam denetimli, pedagojik olarak güçlü ve lutbeamer uyumlu haftalık ders sunumları üretmek"
 
 rules:
   always_on_file: ".agent/rules/rules.md"
   precedence:
-    - "rules.md her zaman skill metninden ustundur."
-    - "Skill ile kural celisirse rules.md uygulanir."
+    - "rules.md mapping'den üstündür."
+    - "mapping skill seçimini ve rol sınırlarını belirler."
+    - "helper skill'ler scope otoritesi değildir."
+
+architecture:
+  orchestrator:
+    name: "weekly_deck_orchestrator"
+    path: ".agent/skills/weekly_deck_orchestrator/SKILL.md"
+  active_agents:
+    - name: "book_grounder"
+      path: ".agent/skills/book_grounder/SKILL.md"
+      role: "Kitabı parçalar, context çıkarır, source pack üretir."
+    - name: "deck_architect"
+      path: ".agent/skills/deck_architect/SKILL.md"
+      role: "Hafta kapsamını, kavram sırasını ve frame planını kurar."
+    - name: "question_design_agent"
+      path: ".agent/skills/question_design_agent/SKILL.md"
+      role: "Soruların bağlamını, zorluk dengesini ve örnek-soru zincirini denetler."
+    - name: "slide_composer"
+      path: ".agent/skills/slide_composer/SKILL.md"
+      role: "LaTeX/lutbeamer deck'i üretir."
+    - name: "deck_guard"
+      path: ".agent/skills/deck_guard/SKILL.md"
+      role: "Scope, pedagoji, Türkçe bütünlük ve derleme kapısını denetler."
+  helper_skills:
+    - name: "book_to_slide_source_pipeline"
+      path: ".agent/skills/book_to_slide_source_pipeline/SKILL.md"
+    - name: "pdf_book_processor"
+      path: ".agent/skills/pdf_book_processor/SKILL.md"
+    - name: "latex_presentation_assistant"
+      path: ".agent/skills/latex_presentation_assistant/SKILL.md"
+    - name: "question_frame_visual_layout"
+      path: ".agent/skills/question_frame_visual_layout/SKILL.md"
 
 routing:
-  - id: "weekly_deck_scaffold_or_refactor"
+  - id: "weekly_book_grounded_deck"
     intent_patterns:
-      - "yeni hafta sunumu olustur"
-      - "hafta X iskeleti kur"
-      - "sunumu standart akisa getir"
-      - "kapak + icindekiler + kapanis duzenle"
+      - "tek promptla haftalik sunum"
+      - "kitaba bagli haftalik sunum"
+      - "hafta ve konuyu verdigimde sunumu hazirla"
+      - "kitaptan uyumlu ders sunumu olustur"
+      - "ilgili hafta icin profesyonel egitim materyali sunumu"
     primary_skill:
-      name: "latex_presentation_assistant"
-      path: ".agent/skills/latex_presentation_assistant/SKILL.md"
+      name: "weekly_deck_orchestrator"
+      path: ".agent/skills/weekly_deck_orchestrator/SKILL.md"
+    supporting_skills:
+      - ".agent/skills/book_grounder/SKILL.md"
+      - ".agent/skills/deck_architect/SKILL.md"
+      - ".agent/skills/question_design_agent/SKILL.md"
+      - ".agent/skills/slide_composer/SKILL.md"
+      - ".agent/skills/deck_guard/SKILL.md"
+    helper_skills:
+      - ".agent/skills/book_to_slide_source_pipeline/SKILL.md"
+      - ".agent/skills/pdf_book_processor/SKILL.md"
+      - ".agent/skills/latex_presentation_assistant/SKILL.md"
+      - ".agent/skills/question_frame_visual_layout/SKILL.md"
     required_resources:
-      - ".agent/skills/latex_presentation_assistant/examples/01_baslangic_ve_kapak.tex"
-      - ".agent/skills/latex_presentation_assistant/examples/02_sunum_akisi_ve_bolumler.tex"
-      - ".agent/skills/latex_presentation_assistant/examples/03_kapanis_ve_kaynakca.tex"
-    enforce_rules_sections:
-      - "1"
-      - "2"
-      - "3"
-      - "11"
-      - "12"
-      - "14"
-      - "15"
+      - ".agent/rules/rules.md"
+      - ".agent/skills/weekly_deck_orchestrator/references/decision-contract.md"
+      - ".agent/skills/question_design_agent/references/question-quality-checklist.md"
+      - ".agent/skills/create_weekly_presentation/references/source-selection.md"
+      - ".agent/skills/create_weekly_presentation/references/deck-pattern.md"
+      - ".agent/skills/create_weekly_presentation/assets/weekly_deck_base.tex"
+      - ".agent/skills/create_weekly_presentation/scripts/extract_chapter_context.py"
+      - ".agent/skills/create_weekly_presentation/scripts/extract_subsection_context.py"
+      - ".agent/skills/create_weekly_presentation/scripts/build_slide_source_pack.py"
+      - ".agent/skills/create_weekly_presentation/scripts/validate_turkish_latex.py"
+    enforce_rule_blocks:
+      - "5. Kitap ve Kapsam Kuralları"
+      - "6. Pedagoji Kuralları"
+      - "7. Üretim Kuralları"
+      - "8. Derleme ve Bütünlük"
+      - "9. Review Gate"
+      - "10. Token Disiplini"
     output_contract:
-      - "Class lutbeamer(light) korunacak."
-      - "Acilis sirasi: kapak -> maketitle -> icindekiler."
-      - "Kapanis: ozet/kaynaklar/kapanis frame."
+      - "Deck önce kitapla uyumlu kaynak pakete zeminlenir, sonra planlanır, sonra yazılır."
+      - "Deck 60 frameden kısa olamaz; kitap aynı hafta kapsamında daha fazlasını destekliyorsa daha uzun deck tercih edilir."
+      - "Matematik kitaplarında formula, tablo ve grafik taşıyan sayfalar extraction sinyalleriyle izlenir; placeholder veya zayıf OCR deck gerekçesi olamaz."
+      - "Sorular kitapla uyumlu ama doğal Türkçe ile, gerçekçi bağlamda ve zorluk dengesi gözetilerek kurulmalıdır."
+      - "Deck review kapısından geçmeden teslim edilmez."
+      - "Kapsam dışı konu varsayılan olarak reddedilir."
 
-  - id: "concept_explanation_plus_question_solution"
+  - id: "book_grounding_only"
     intent_patterns:
-      - "konu anlatimi ve akabinde soru ekle"
-      - "ilgili yerde soru cozum koy"
-      - "uzunsa soru bir frame cozum bir frame"
-      - "muhendislik baglamli ozgun soru yaz"
+      - "kitabi source packe cevir"
+      - "chapter context cikar"
+      - "subsection manifest olustur"
+      - "ham pdf yerine deck source pack hazirla"
     primary_skill:
-      name: "latex_presentation_assistant"
-      path: ".agent/skills/latex_presentation_assistant/SKILL.md"
+      name: "book_grounder"
+      path: ".agent/skills/book_grounder/SKILL.md"
+    helper_skills:
+      - ".agent/skills/book_to_slide_source_pipeline/SKILL.md"
+      - ".agent/skills/pdf_book_processor/SKILL.md"
     required_resources:
+      - ".agent/skills/weekly_deck_orchestrator/references/decision-contract.md"
+      - ".agent/skills/create_weekly_presentation/scripts/extract_chapter_context.py"
+      - ".agent/skills/create_weekly_presentation/scripts/extract_subsection_context.py"
+      - ".agent/skills/create_weekly_presentation/scripts/build_slide_source_pack.py"
+      - ".agent/skills/pdf_book_processor/scripts/extract_sections.py"
+    enforce_rule_blocks:
+      - "5. Kitap ve Kapsam Kuralları"
+      - "10. Token Disiplini"
+
+  - id: "deck_architecture_only"
+    intent_patterns:
+      - "haftanin kapsam planini cikar"
+      - "frame iskeleti kur"
+      - "pedagojik akisi planla"
+      - "hangi konular in scope belirle"
+    primary_skill:
+      name: "deck_architect"
+      path: ".agent/skills/deck_architect/SKILL.md"
+    required_resources:
+      - ".agent/skills/weekly_deck_orchestrator/references/decision-contract.md"
+      - ".agent/skills/deck_architect/references/blueprint-pattern.md"
+      - ".agent/skills/create_weekly_presentation/references/source-selection.md"
+      - ".agent/skills/create_weekly_presentation/references/deck-pattern.md"
+      - ".agent/skills/create_weekly_presentation/assets/weekly_deck_base.tex"
+    enforce_rule_blocks:
+      - "5. Kitap ve Kapsam Kuralları"
+      - "6. Pedagoji Kuralları"
+      - "10. Token Disiplini"
+
+  - id: "slide_composition_only"
+    intent_patterns:
+      - "latex decki yaz"
+      - "sunum govdesini uret"
+      - "plani lutbeamer sunumuna cevir"
+      - "haftalik tex dosyasini doldur"
+    primary_skill:
+      name: "slide_composer"
+      path: ".agent/skills/slide_composer/SKILL.md"
+    helper_skills:
+      - ".agent/skills/latex_presentation_assistant/SKILL.md"
+      - ".agent/skills/question_frame_visual_layout/SKILL.md"
+    required_resources:
+      - ".agent/skills/weekly_deck_orchestrator/references/decision-contract.md"
+      - ".agent/skills/question_design_agent/references/question-quality-checklist.md"
+      - ".agent/skills/create_weekly_presentation/assets/weekly_deck_base.tex"
+      - ".agent/skills/question_frame_visual_layout/examples/01_soru_frame_ve_gorsel_standardi.tex"
       - ".agent/skills/latex_presentation_assistant/examples/10_icerik_boxlari.tex"
       - ".agent/skills/latex_presentation_assistant/examples/11_hizali_cift_sutun_box.tex"
-    enforce_rules_sections:
-      - "3"
-      - "4"
-      - "5"
-      - "7"
-      - "8"
-      - "13"
-      - "15"
-    output_contract:
-      - "Soru, ilgili konu frame'inin hemen arkasina gelir."
-      - "Kisa soru/cozum tek frame iki kolon olabilir."
-      - "Uzun soru/cozum ayri frame'lere bolunur."
-      - "Cozum sonunda kisa yorum bulunur."
+    enforce_rule_blocks:
+      - "6. Pedagoji Kuralları"
+      - "7. Üretim Kuralları"
+      - "8. Derleme ve Bütünlük"
 
-  - id: "bridge_recap_exit_ticket"
+  - id: "deck_guard_only"
     intent_patterns:
-      - "hafta X'ten ne getiriyoruz slaydi ekle"
-      - "kavram haritasi ekle"
-      - "mini quiz / cikis bileti ekle"
-      - "genel ozet slaytlari olustur"
+      - "sunumu review et"
+      - "scope leakage var mi kontrol et"
+      - "pedagojik review yap"
+      - "turkce butunluk denetimi yap"
+    primary_skill:
+      name: "deck_guard"
+      path: ".agent/skills/deck_guard/SKILL.md"
+    required_resources:
+      - ".agent/skills/weekly_deck_orchestrator/references/decision-contract.md"
+      - ".agent/skills/question_design_agent/references/question-quality-checklist.md"
+      - ".agent/skills/deck_guard/references/review-checklist.md"
+      - ".agent/skills/create_weekly_presentation/scripts/validate_turkish_latex.py"
+    enforce_rule_blocks:
+      - "5. Kitap ve Kapsam Kuralları"
+      - "6. Pedagoji Kuralları"
+      - "8. Derleme ve Bütünlük"
+      - "9. Review Gate"
+
+  - id: "generic_lutbeamer_edit"
+    intent_patterns:
+      - "lutbeamer sunum"
+      - "frame ekle"
+      - "ornek ekle"
+      - "soru ekle"
+      - "cozum ekle"
+      - "ozet ekle"
+      - "kapanis ekle"
     primary_skill:
       name: "latex_presentation_assistant"
       path: ".agent/skills/latex_presentation_assistant/SKILL.md"
-    required_resources:
-      - ".agent/skills/latex_presentation_assistant/examples/02_sunum_akisi_ve_bolumler.tex"
-      - ".agent/skills/latex_presentation_assistant/examples/08_interaktif_test.tex"
-    enforce_rules_sections:
-      - "2"
-      - "3"
-      - "6"
-      - "11"
-      - "14"
-      - "15"
-    output_contract:
-      - "Kopru frame'i onceki haftayi baglar."
-      - "Ozet frame'i 3-5 maddeyi gecmez."
+    helper_skills:
+      - ".agent/skills/question_frame_visual_layout/SKILL.md"
+    enforce_rule_blocks:
+      - "7. Üretim Kuralları"
+      - "8. Derleme ve Bütünlük"
 
-  - id: "visual_or_tikz_component"
+  - id: "ocr_homework_builder"
     intent_patterns:
-      - "tikz grafik ekle"
-      - "ikonik motivasyon vakasi ekle"
-      - "gorsel destekli frame olustur"
+      - "ocr odev hazirla"
+      - "cevap kagidi ekle"
+      - "aruco lu odev"
     primary_skill:
-      name: "latex_presentation_assistant"
-      path: ".agent/skills/latex_presentation_assistant/SKILL.md"
-    required_resources:
-      - ".agent/skills/latex_presentation_assistant/examples/05_ikonik_motivasyon_senaryosu.tex"
-      - ".agent/skills/latex_presentation_assistant/examples/12_tikz_grafik_prensipleri.tex"
-    enforce_rules_sections:
-      - "4"
-      - "10"
-      - "13"
-      - "15"
-    output_contract:
-      - "Gorsel anlatimi destekler, sus amacli olmaz."
-      - "Kolon/genislik kurallari tasma riskini artirmayacak."
+      name: "latex_ocr_homework_builder"
+      path: ".agent/skills/latex_ocr_homework_builder/SKILL.md"
 
-  - id: "pdf_book_split"
+  - id: "question_design_only"
     intent_patterns:
-      - "pdf kitabi bol"
-      - "bolumlere gore ayir"
-      - "outline/bookmark ile parcala"
+      - "sorulari guclendir"
+      - "soru baglamini iyilestir"
+      - "soru kurgusunu dogallastir"
+      - "zorluk dengesini kontrol et"
     primary_skill:
-      name: "pdf_book_processor"
-      path: ".agent/skills/pdf_book_processor/SKILL.md"
+      name: "question_design_agent"
+      path: ".agent/skills/question_design_agent/SKILL.md"
     required_resources:
-      - ".agent/skills/pdf_book_processor/scripts/extract_sections.py"
-    enforce_rules_sections: []
-    output_contract:
-      - "PDF outline/bookmark yapisina gore bolunur."
-      - "Dosya adlari sanitize edilir."
-      - "Varsayilan cikti klasoru: Split_Sections."
+      - ".agent/skills/weekly_deck_orchestrator/references/decision-contract.md"
+      - ".agent/skills/question_design_agent/references/question-quality-checklist.md"
+      - ".agent/skills/create_weekly_presentation/references/source-selection.md"
+    enforce_rule_blocks:
+      - "6. Pedagoji Kuralları"
+      - "9. Review Gate"
 
-overrides:
-  latex_presentation_assistant:
-    apply:
-      - "Rules.md zorunlu, skill rehber metni yardimci."
-      - "Tema degisikligi yok: lutbeamer korunur."
-      - "Bibliography dosya adi references.bib tercih edilir (rules ile uyum)."
-    disable_assumptions:
-      - "Gorsel uretimi icin zorunlu generate_image varsayimi."
-      - "Her kod frame icin otomatik fragile ekleme refleksi."
+legacy:
+  create_weekly_presentation:
+    status: "compatibility_alias"
+    replacement: "weekly_deck_orchestrator + deck_architect"
+  question_frame_visual_layout:
+    status: "helper_mode"
+    used_by: "question_design_agent + slide_composer"
   pdf_book_processor:
-    apply:
-      - "Sadece PDF parcalama islerinde kullan."
-      - "LaTeX sunum tasklarinda devreye girmez."
+    status: "tool_mode"
+    used_by: "book_grounder"
+  latex-beamer-zebra-syllabus-table:
+    status: "snippet_only"
 
 fallback:
-  strategy: "rule_only_manual_edit"
+  strategy: "minimal_book_grounded_route"
   when:
     - "Intent hicbir route ile eslesmiyorsa"
-    - "Skill dosyasi bozuk/erisilemezse"
+    - "Eski create_weekly_presentation aliskanligiyle benzer istek geliyorsa"
   behavior:
-    - "Yalniz rules.md uzerinden karar ver."
-    - "lutbeamer iskeleti ve ders dili korunur."
-
+    - "Haftalik kitap tabanli deck gorevlerinde weekly_deck_orchestrator varsayilir."
+    - "Genel lutbeamer duzenlemelerinde latex_presentation_assistant varsayilir."

@@ -1,0 +1,84 @@
+% ===================================================================
+% SKILL: SORU FRAME + DURAK FRAME + TAM COZUM FRAME
+% ===================================================================
+% AMAC:
+% Soruyu kutusuz ana govdede vermek, gerekirse sagda gorsel kullanmak ve
+% cozumu iki asamada gostermek:
+% 1. dusuk kontrastli cozum icin durak
+% 2. tam kirmizi cozum
+%
+% ON KOSUL:
+% \solutionghost ve \solutiontext yardimcilari 10_icerik_boxlari.tex
+% yaklasimina gore tanimlanmis olmalidir.
+% ===================================================================
+
+\begin{frame}[t]{Soru 2: Uretim Hatti}
+\small
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.54\textwidth}
+        Bir elektronik montaj hattinda iki test asamasi vardir: termal test ve
+        titresim testi.
+
+        \vspace{0.2cm}
+        \textbf{Verilenler}
+        \begin{itemize}
+            \item Termal testi gecme olasiligi: \(0.80\)
+            \item Termal testi gecen bir modulun titresimi de gecme olasiligi: \(0.75\)
+        \end{itemize}
+
+        \textbf{Istenen}
+        \begin{itemize}
+            \item[A.] Rastgele secilen bir modulun iki testi de gecme olasiligini bulunuz.
+            \item[B.] Sonucu kisa bir karar cumlesiyle yorumlayiniz.
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+        \centering
+        \begin{tikzpicture}[scale=0.85, every node/.style={font=\scriptsize}]
+            \node[draw, rounded corners, fill=blue!8, minimum width=3.2cm, minimum height=0.85cm, align=center] (t) at (2.0,2.6) {Termal testi\\gecenler};
+            \node[draw, rounded corners, fill=green!10, minimum width=3.0cm, minimum height=0.85cm, align=center] (v) at (2.0,1.0) {Titresimi de\\gecen alt kume};
+            \draw[-{Stealth[length=2.2mm]}, thick] (t) -- (v);
+            \node[align=center] at (2.0,1.8) {kosullu okuma\\ustten alta};
+        \end{tikzpicture}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Soru 2: Cozum Icin Durak}
+\small
+\solutionghost{
+\textbf{Adim 1.} Ortak gecis olasiligi carpim mantigi ile okunur.
+
+\[
+    P(T \cap V) = P(T)\,P(V\mid T)
+\]
+
+\textbf{Adim 2.} Sayilari yerlestir:
+
+\[
+    P(T \cap V) = 0.80 \times 0.75
+\]
+
+\textbf{Adim 3.} Sonucu once kendin tamamla ve dur.
+}
+\end{frame}
+
+\begin{frame}[t]{Soru 2: Cozum}
+\small
+\solutiontext{
+\textbf{Adim 1.} Ortak gecis olasiligi carpim mantigi ile okunur:
+
+\[
+    P(T \cap V) = P(T)\,P(V\mid T)
+\]
+
+\textbf{Adim 2.} Sayilari yerlestir:
+
+\[
+    P(T \cap V) = 0.80 \times 0.75 = 0.60
+\]
+
+\textbf{Yorum.} Rastgele secilen bir modulun iki testi de gecme olasiligi
+\%60'tir; bu nedenle titresim asamasi sistemde ciddi bir ikinci filtre gorevi gorur.
+}
+\end{frame}

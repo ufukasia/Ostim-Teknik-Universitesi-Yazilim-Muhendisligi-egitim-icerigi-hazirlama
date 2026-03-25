@@ -1,64 +1,65 @@
 % ===================================================================
-% SKILL: ÇİFT SÜTUNLU HİZALI KUTULAR (SIDE-BY-SIDE BOXES)
+% SKILL: UST HIZALI CIFT SUTUN, ANA GOVDE KUTUSUZ
 % ===================================================================
-% TANIM:
-% Beamer'da iki sütunlu (columns) tasarımda kutuların üst hizalamasının
-% kayması çok yaygın bir sorundur. Bu şablon, [t] (top align)
-% parametresi ile kutuların kusursuz bir şekilde aynı hizada
-% başlamasını sağlar.
-% 
-% MEKANİZMA:
-% \begin{columns}[t] -> Sütun içeriğini en üstten hizalar.
+% AMAC:
+% Iki sutunlu yerlesimde ana anlatimi kutusuz kurmak, gerekiyorsa yalnizca
+% kisa bir yardimci not kutusu kullanmak.
 % ===================================================================
 
-\begin{frame}{Karşılaştırmalı Analiz (Hizalı Kutular)}
-    
-    % [t] parametresi CRITICAL öneme sahiptir.
-    % Olmazsa içeriğe göre dikeyde ortalanır ve hizalar kayar.
-    \begin{columns}[t] 
-        
-        % SOL SÜTUN
-        \column{0.48\textwidth}
-        \begin{block}{1. Tanımlayıcı İstatistik}
-            % İçerik az olsa bile kutu en üstten başlar.
-            Verilerin özetlenmesi ve betimlenmesidir.
-            \begin{itemize}
-                \item Ortalama
-                \item Medyan
-                \item Mod
-            \end{itemize}
-        \end{block}
+\begin{frame}[t]{Iki Sutunda Kutu Yerine Icerik}
+\small
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+        \textbf{Ayrik yapilar}
 
-        % SAĞ SÜTUN
-        \column{0.48\textwidth}
-        \begin{block}{2. Çıkarımsal İstatistik}
-            % İçerik çok olsa bile sol kutuyla aynı hizada başlar.
-            Örneklem verisinden anakütle hakkında tahminlerde bulunmaktır.
-            \begin{itemize}
-                \item Hipotez Testleri
-                \item Güven Aralıkları
-                \item Regresyon Analizi
-                \item ANOVA
-            \end{itemize}
-        \end{block}
-        
-    \end{columns}
-    
-    \vspace{1em}
-    
-    % FARKLI TÜR KUTULARIN YAN YANA KULLANIMI
-    \begin{columns}[t]
-        
-        \column{0.48\textwidth}
-        \begin{alertblock}{Yanlış Yöntem}
-            Verinin sadece ortalamasına bakarak dağılım hakkında karar vermek yanıltıcıdır.
-        \end{alertblock}
-        
-        \column{0.48\textwidth}
-        \begin{exampleblock}{Doğru Yöntem}
-            Histogram ve Kutu Grafiği (Boxplot) çizerek aykırı değerleri incelemektir.
-        \end{exampleblock}
-        
-    \end{columns}
+        \vspace{0.2cm}
+        Sonuc kumesi sonlu veya sayilabilir sonsuz ise degisken ayriktir.
 
+        \begin{itemize}
+            \item zar sonucu
+            \item hatali urun sayisi
+            \item gelen cagri adedi
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+        \textbf{Surekli yapilar}
+
+        \vspace{0.2cm}
+        Olasi degerler bir araliktaki tum noktalari kapsiyorsa degisken sureklidir.
+
+        \begin{itemize}
+            \item bekleme suresi
+            \item olcum hatasi
+            \item sicaklik
+        \end{itemize}
+    \end{column}
+\end{columns}
+
+\vspace{0.25cm}
+\begin{infoblock}{Kritik Ayirim}
+    Sonsuz sayida deger tek basina surekli olmak anlamina gelmez; sayilabilir sonsuzluk yine ayrik olabilir.
+\end{infoblock}
+\end{frame}
+
+\begin{frame}[t]{Karsilastirma ve Sonuc}
+\small
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+        \textbf{Okuma prensibi}
+
+        \vspace{0.2cm}
+        Ayrik yapida sayma mantigi, surekli yapida aralik ve alan mantigi baskindir.
+
+        \[
+            \text{ayrik} \Rightarrow \sum
+            \qquad
+            \text{surekli} \Rightarrow \int
+        \]
+    \end{column}
+    \begin{column}{0.38\textwidth}
+        \begin{resultblock}{Sonuc}
+            Hangi dagilim aracini kullanacagin sorunun yapisi belirler.
+        \end{resultblock}
+    \end{column}
+\end{columns}
 \end{frame}

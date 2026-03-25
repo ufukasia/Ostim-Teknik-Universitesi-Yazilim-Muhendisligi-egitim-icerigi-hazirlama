@@ -1,70 +1,109 @@
 % ===================================================================
-% SKILL: İÇERİK KUTULARI (BOXES) STANDARDI
+% SKILL: KATEGORIK YARDIMCI BOX'LAR + KUTUSUZ ANA ANLATIM
 % ===================================================================
-% TANIM:
-% Sunumda içeriğin türüne göre (Matematik, Uyarı, Örnek, Kod) doğru 
-% kutu (block) yapısını kullanmak, öğrencinin algısını yönetir.
-% 
-% KURALLAR:
-% 1. Matematik/Tanım -> Standart Mavi Blok (block)
-% 2. Kritik/Uyarı    -> Kırmızı Blok (alertblock)
-% 3. Örnek/Senaryo   -> Yeşil Blok (exampleblock)
-% 4. Kod/Uzun Metin  -> Font küçültülmüş Blok (Taşmayı önlemek için)
+% AMAC:
+% Frame'i ana tasiyici olarak kullanmak; buyuk genel anlatimi kutu icine
+% almamak; sadece not, dikkat ve sonuc gibi ikincil mesajlari renkli
+% kutularla vurgulamak.
+%
+% NOT:
+% Bu snippet yeni varsayimi tanimlar:
+% 1. Ana konu anlatimi dogrudan frame govdesinde yazilir.
+% 2. Box'lar yalnizca ikincil semantik vurgu icindir.
+% 3. Cozum metni icin kirmizi yardimci komutlar saglanir.
 % ===================================================================
 
-\begin{frame}{İçerik Kutuları Örnekleri}
+% -------------------------------------------------------------------
+% 1. PREAMBLE'A BIR KEZ EKLENECEK YARDIMCI TANIMLAR
+% -------------------------------------------------------------------
+\definecolor{probInfoGray}{HTML}{4B5563}
+\definecolor{probResultOrange}{HTML}{FF8621}
+\definecolor{probExampleGreen}{HTML}{2E7D32}
 
-    % 1. MATEMATİK VE TEORİ (STANDART MAVİ BLOK)
-    % Tanımlar, teoremler, formüller ve temel kavramlar için.
-    \begin{block}{Tanım: Olasılık Yoğunluk Fonksiyonu}
-        Bir sürekli rassal değişkenin belirli bir aralıkta değer alma olasılığını veren fonksiyondur.
-        \[ P(a \le X \le b) = \int_{a}^{b} f(x) \,dx \]
+\setbeamercolor{block title example}{fg=white,bg=probExampleGreen}
+\setbeamercolor{block body example}{fg=black,bg=probExampleGreen!8}
+
+\newenvironment{infoblock}[1]
+{
+    \setbeamercolor{block title}{fg=white,bg=probInfoGray}
+    \setbeamercolor{block body}{fg=black,bg=probInfoGray!10}
+    \begin{block}{#1}
+}
+{
     \end{block}
+}
 
-    \vspace{1em}
+\newenvironment{noteblock}[1]
+{
+    \begin{infoblock}{#1}
+}
+{
+    \end{infoblock}
+}
 
-    % 2. KRİTİK UYARI (KIRMIZI ALERT BLOK)
-    % Hatalar, dikkat edilmesi gerekenler, istisnalar için.
-    \begin{alertblock}{Kritik Hata: Korelasyon vs Nedensellik}
-        Korelasyonun yüksek olması ($r \approx 1$), bir değişkenin diğerinin \textbf{sebebi} olduğu anlamına gelmez! Bu ``Spurious Correlation'' tuzağıdır.
-    \end{alertblock}
+\newenvironment{resultblock}[1]
+{
+    \setbeamercolor{block title}{fg=white,bg=probResultOrange}
+    \setbeamercolor{block body}{fg=black,bg=probResultOrange!12}
+    \begin{block}{#1}
+}
+{
+    \end{block}
+}
 
-    \vspace{1em}
+\newcommand{\solutionghost}[1]{{\color{red!45!black}#1}}
+\newcommand{\solutiontext}[1]{{\color{red!85!black}#1}}
 
-    % 3. ÖRNEK VE UYGULAMA (YEŞİL EXAMPLE BLOK)
-    % Senaryolar, vaka analizleri ve pratik örnekler için.
-    \begin{exampleblock}{Örnek Senaryo: Üretim Hattı}
-        Bir fabrikada üretilen vidaların \%2'si kusurludur. Rastgele seçilen 100 vidadan en az 3 tanesinin kusurlu olma olasılığı nedir?
-    \end{exampleblock}
+% -------------------------------------------------------------------
+% 2. HIZLI KURAL OZETI
+% -------------------------------------------------------------------
+\begin{frame}{Kullanim Mantigi}
+    \small
+    \begin{itemize}
+        \item Frame zaten ana beyaz alandir; genel anlatimi buyuk bir block icine kapatma.
+        \item Ana konu, tanim, teorem ve adim adim cozum dogrudan frame govdesinde yazilir.
+        \item Box kullanilacaksa bunu sadece not, dikkat, sonuc veya kisa mikro ornek icin yap.
+    \end{itemize}
 
+    \begin{infoblock}{Hatirlatma}
+        Bu gri kutu ana govdeyi tasimaz; yalnizca ek aciklama verir.
+    \end{infoblock}
 \end{frame}
 
-% 4. KOD BLOĞU (TAŞMA KORUMALI)
-% Kodlar genellikle uzundur ve taşar. Mutlaka font küçültülmelidir.
-% [fragile] parametresi kod bloğu içeren frame için ZORUNLUDUR.
-\begin{frame}[fragile]{Kod Bloğu Örneği}
-    
-    \begin{block}{Python: Veri Analizi Kodu}
-        % Font boyutu \small, \footnotesize veya \scriptsize olarak ayarlanır.
-        % Bu sayede kodlar kutunun dışına taşmaz.
-        \footnotesize 
-        \begin{verbatim}
-import pandas as pd
-import numpy as np
+% -------------------------------------------------------------------
+% 3. KUTUSUZ KONU ANLATIMI + TEK DESTEK KUTUSU
+% -------------------------------------------------------------------
+\begin{frame}{Kutusuz Konu Anlatimi}
+    \small
+    Olasilikta once deneyi tanimlar, sonra ornek uzayi kurariz. Bir olay bu uzayin
+    uygun bir alt kumesidir. Bu ana anlatim dogrudan frame govdesinde kalir.
 
-# Veri setini yükle ve özetle
-df = pd.read_csv('data.csv')
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item Deney: fiziksel veya mantiksal surec
+        \item Ornek uzay: tum olasi sonuc kumesi
+        \item Olay: ornek uzayin ilgili alt kumesi
+    \end{itemize}
 
-# Eksik verileri kontrol et (Kritik Adım)
-if df.isnull().sum() > 0:
-    print("Uyarı: Eksik veri bulundu!")
-    df.dropna(inplace=True)
+    \begin{resultblock}{Ana Fikir}
+        Kutu burada ana anlatimi tasimaz; sadece ana cikarimi ayri bir katmanda vurgular.
+    \end{resultblock}
+\end{frame}
 
-print(df.describe())
-        \end{verbatim}
-    \end{block}
-    
-    \vspace{0.5em}
-    \centering
-    \textit{\scriptsize Not: Kod bloklarında fontu küçültmek (footnotesize) taşmayı önler.}
+% -------------------------------------------------------------------
+% 4. COZUM METNI ICIN KIRMIZI AKIS
+% -------------------------------------------------------------------
+\begin{frame}{Cozum Renk Yardimcilari}
+    \small
+    Ilk cozum frame'inde dusuk kontrast:
+
+    \[
+        \solutionghost{P(A') = 1 - P(A)}
+    \]
+
+    Tam cozum frame'inde guclu kirmizi:
+
+    \[
+        \solutiontext{P(A') = 1 - P(A) = 1 - 0.12 = 0.88}
+    \]
 \end{frame}
